@@ -30,6 +30,8 @@ namespace MediaFireSDK.Core
             requestConfig.Parameter(ApiParameters.Key, key);
 
             var response = await RequestController.Get<UploadResponse>(requestConfig);
+
+            response.DoUpload.Key = key;
             return response.DoUpload;
         }
 

@@ -1,0 +1,1 @@
+nuget pack ..\Source\MediaFireSDK\MediaFireSDK.csproj -Prop Configuration=Release
