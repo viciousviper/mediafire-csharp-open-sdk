@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>MediaFireSDK</title>
+    <authors>MediaFire</authors>
+    <owners>MediaFire</owners>
+    <licenseUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk</projectUrl>
+    <iconUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk/blob/master/MediaFireLogo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This Portable Class Library enables your applications to integrate with the MediaFire API.
+	Supported Platforms:
+	 - .NET Framework 4.5
+	 - Windows 8
+	 - Windows Phone Silverlight 8 and 8.1
+	 - Windows Phone 8.1
+	 - Xamarin (Android, iOS and iOS Classic)
+	</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>MediaFire Cloud API</tags>
+  </metadata>
+</package>
