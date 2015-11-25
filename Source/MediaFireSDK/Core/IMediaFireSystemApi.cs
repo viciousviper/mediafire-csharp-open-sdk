@@ -13,7 +13,6 @@ namespace MediaFireSDK.Core
         /// <summary>
         /// Returns all the configuration data about the MediaFire system.
         /// </summary>
-        /// <returns></returns>
         Task<MediaFireDetails> GetInfo();
     }
 }

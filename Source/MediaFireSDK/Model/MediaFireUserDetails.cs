@@ -75,7 +75,7 @@ namespace MediaFireSDK.Model
         public string Gender { get; set; }
 
         [JsonProperty("birth_date")]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         public string Location { get; set; }
 

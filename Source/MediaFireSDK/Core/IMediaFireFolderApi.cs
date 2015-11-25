@@ -42,14 +42,12 @@ namespace MediaFireSDK.Core
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
         /// <param name="privacy">Privacy of the folder ('public' or 'private').</param>
         /// <param name="privacyRecursive">Whether or not applying 'privacy' to sub-folders.</param>
-        /// <returns></returns>
         Task Update(string folderKey, string folderName = null, string description = null, DateTime? modificationTime = null, MediaFirePrivacy? privacy = null, bool? privacyRecursive = null);
 
         /// <summary>
         /// Deletes a folder.
         /// </summary>
         /// <param name="folderKey">The key that identifies the folder to be deleted.</param>
-        /// <returns></returns>
         Task Delete(string folderKey);
 
         /// <summary>
@@ -57,7 +55,6 @@ namespace MediaFireSDK.Core
         /// </summary>
         /// <param name="folderKey">A folder key.</param>
         /// <param name="folderKeyDst">The destination folderkey.</param>
-        /// <returns></returns>
         Task Move(string folderKey, string folderKeyDst);
 
         /// <summary>
@@ -76,7 +73,6 @@ namespace MediaFireSDK.Core
         /// <param name="folderKey">The key that identifies a folder.</param>
         /// <param name="deviceId">An integer specifying on which user device to look for data.</param>
         /// <param name="details">Specifies additional folder information to return in the results.</param>
-        /// <returns></returns>
         Task<MediaFireFolder> GetInfo(string folderKey, string deviceId = null, bool details = false);
 
         /// <summary>
@@ -88,7 +84,6 @@ namespace MediaFireSDK.Core
         /// <param name="searchAll">If <paramref name="folderKey"/> is not passed, <paramref name="searchAll"/> can be used to indicate whether to search the root folder only or the entire device</param>
         /// <param name="details">Specifies additional folder information to return in the results.</param>
         /// <param name="filters">Filter by privacy and/or by filetype.</param>
-        /// <returns></returns>
         Task<IEnumerable<MediaFireItem>> Search(string searchText, string folderKey = null, string deviceId = null, bool searchAll = false, bool details = false, params MediaFireContentFilter[] filters);
     }
 
@@ -108,7 +103,6 @@ namespace MediaFireSDK.Core
         /// Return an url of <paramref name="folder"/>
         /// </summary>
         /// <param name="folder">A folder</param>
-        /// <returns></returns>
         public static string GetFolderPublicUrl(this MediaFireFolder folder)
         {
             return string.Format(MediaFireApiConstants.PublicFolderUrlFormat, folder.Key);
@@ -121,7 +115,6 @@ namespace MediaFireSDK.Core
         /// <param name="newPrivacy">The desired privacy.</param>
         /// <param name="privacyRecursive">Whether or not applying 'privacy' to sub-folders.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task ChangePrivacy(this IMediaFireFolderApi folderApi, string folderKey, MediaFirePrivacy newPrivacy, bool privacyRecursive = false, DateTime? modificationTime = null)
         {
             return folderApi.Update(folderKey, privacy: newPrivacy, privacyRecursive: privacyRecursive, modificationTime: modificationTime);
@@ -145,7 +138,6 @@ namespace MediaFireSDK.Core
         /// <param name="folderKey">A folder key.</param>
         /// <param name="newName">The new folder name.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task Rename(this IMediaFireFolderApi folderApi, string folderKey, string newName, DateTime? modificationTime = null)
         {
             return folderApi.Update(folderKey, folderName: newName, modificationTime: modificationTime);
@@ -157,7 +149,6 @@ namespace MediaFireSDK.Core
         /// <param name="folder">A folder.</param>
         /// <param name="newName">The new folder name.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task Rename(this IMediaFireFolderApi folderApi, MediaFireFolder folder, string newName, DateTime? modificationTime = null)
         {
             return folderApi.Rename(folder.FolderKey, newName, modificationTime);
@@ -167,7 +158,6 @@ namespace MediaFireSDK.Core
         /// Deletes a folder.
         /// </summary>
         /// <param name="folder">A Folder.</param>
-        /// <returns></returns>
         public static Task Delete(this IMediaFireFolderApi folderApi, MediaFireFolder folder)
         {
             return folderApi.Delete(folder.FolderKey);
@@ -179,7 +169,6 @@ namespace MediaFireSDK.Core
         /// </summary>
         /// <param name="folder">A folder.</param>
         /// <param name="destination">The destination folder.</param>
-        /// <returns></returns>
         public static Task Move(this IMediaFireFolderApi folderApi, MediaFireFolder folder, MediaFireFolder destination)
         {
             return folderApi.Move(folder.FolderKey, destination.FolderKey);

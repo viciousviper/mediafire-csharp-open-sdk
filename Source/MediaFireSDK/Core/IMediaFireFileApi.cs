@@ -20,7 +20,6 @@ namespace MediaFireSDK.Core
         /// <param name="destination">A stream where the content of the file will be writted.</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <param name="progress">A callback to receive progress updates.</param>
-        /// <returns></returns>
         Task Download(string quickKey, Stream destination, CancellationToken token, IProgress<MediaFireOperationProgress> progress = null);
 
         /// <summary>
@@ -29,7 +28,6 @@ namespace MediaFireSDK.Core
         /// <param name="quickKey">The quickkey that identifies the file.</param>
         /// <param name="destination">A stream where the content of the file will be writted.</param>
         /// <param name="progress">A callback to receive progress updates.</param>
-        /// <returns></returns>
         Task Download(string quickKey, Stream destination, IProgress<MediaFireOperationProgress> progress = null);
 
         /// <summary>
@@ -71,7 +69,6 @@ namespace MediaFireSDK.Core
         /// Returns the file with <paramref name="quickKey"/> details.
         /// </summary>
         /// <param name="quickKey">The quickkey that identifies the file</param>
-        /// <returns></returns>
         Task<MediaFireFile> GetInfo(string quickKey);
 
         /// <summary>
@@ -79,7 +76,6 @@ namespace MediaFireSDK.Core
         /// </summary>
         /// <param name="quickKey">The quickkey that identifies the file</param>
         /// <param name="linkType">Specify which link type to return. If not passed, all applicable link types are returned. view, edit, normal_download, direct_download, one_time_download, listen, watch, streaming.</param>
-        /// <returns></returns>
         Task<MediaFireLinkCollection> GetLinks(string quickKey, MediaFireLinkType linkType = MediaFireLinkType.All);
 
         /// <summary>
@@ -91,14 +87,12 @@ namespace MediaFireSDK.Core
         /// <param name="truncate">Specifies if the content of the file should be deleted.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
         /// <param name="privacy">Privacy of the file</param>
-        /// <returns></returns>
         Task Update(string quickKey, string fileName = null, string description = null, bool truncate = false, DateTime? modificationTime = null, MediaFirePrivacy? privacy = null);
 
         /// <summary>
         /// Moves the file to the trash can.
         /// </summary>
         /// <param name="quickKey">The quickkey that identifies the file. </param>
-        /// <returns></returns>
         Task Delete(string quickKey);
 
         /// <summary>
@@ -106,7 +100,6 @@ namespace MediaFireSDK.Core
         /// </summary>
         /// <param name="quickKey">The quickkey that identifies the file. </param>
         /// <param name="folderKey">The destination folder key to move the file. If it's not passed, then the file will be moved to the root folder.</param>
-        /// <returns></returns>
         Task Move(string quickKey, string folderKey);
     }
 
@@ -119,9 +112,7 @@ namespace MediaFireSDK.Core
         /// <param name="destination">A stream where the content of the file will be writted.</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <param name="progress">A callback to receive progress updates.</param>
-        /// <returns></returns>
-        public static Task Download(this IMediaFireFileApi fileApi, MediaFireFile file, Stream destination,
-            CancellationToken token, IProgress<MediaFireOperationProgress> progress = null)
+        public static Task Download(this IMediaFireFileApi fileApi, MediaFireFile file, Stream destination, CancellationToken token, IProgress<MediaFireOperationProgress> progress = null)
         {
             return fileApi.Download(file.QuickKey, destination, token, progress);
         }
@@ -132,9 +123,7 @@ namespace MediaFireSDK.Core
         /// <param name="file">The file to download.</param>
         /// <param name="destination">A stream where the content of the file will be writted.</param>
         /// <param name="progress">A callback to receive progress updates.</param>
-        /// <returns></returns>
-        public static Task Download(this IMediaFireFileApi fileApi, MediaFireFile file, Stream destination,
-            IProgress<MediaFireOperationProgress> progress = null)
+        public static Task Download(this IMediaFireFileApi fileApi, MediaFireFile file, Stream destination, IProgress<MediaFireOperationProgress> progress = null)
         {
             return fileApi.Download(file, destination, CancellationToken.None, progress);
         }
@@ -180,7 +169,6 @@ namespace MediaFireSDK.Core
         /// Returns the view link, normal download link, and, if possible, the direct download link of a file.
         /// </summary>
         /// <param name="quickKey">The quickkey that identifies the file.</param>
-        /// <returns></returns>
         public static Task<MediaFireLinkCollection> GetLinks(this IMediaFireFileApi fileApi, string quickKey)
         {
             return fileApi.GetLinks(quickKey, MediaFireLinkType.All);
@@ -192,7 +180,6 @@ namespace MediaFireSDK.Core
         /// <param name="quickKey">The quickkey that identifies the file.</param>
         /// <param name="newPrivacy">The desired privacy.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task ChangePrivacy(this IMediaFireFileApi fileApi, string quickKey, MediaFirePrivacy newPrivacy, DateTime? modificationTime = null)
         {
             return fileApi.Update(quickKey, privacy: newPrivacy, modificationTime: modificationTime);
@@ -204,7 +191,6 @@ namespace MediaFireSDK.Core
         /// <param name="file">The file to change the privacy.</param>
         /// <param name="newPrivacy">The desired privacy.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task ChangePrivacy(this IMediaFireFileApi fileApi, MediaFireFile file, MediaFirePrivacy newPrivacy, DateTime? modificationTime = null)
         {
             return fileApi.ChangePrivacy(file.QuickKey, newPrivacy, modificationTime);
@@ -216,7 +202,6 @@ namespace MediaFireSDK.Core
         /// <param name="quickKey">The quickkey that identifies the file.</param>
         /// <param name="newName">The new file name.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task Rename(this IMediaFireFileApi fileApi, string quickKey, string newName, DateTime? modificationTime = null)
         {
             return fileApi.Update(quickKey, fileName: newName, modificationTime: modificationTime);
@@ -228,7 +213,6 @@ namespace MediaFireSDK.Core
         /// <param name="file">The file to change the privacy.</param>
         /// <param name="newName">The new file name.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         public static Task Rename(this IMediaFireFileApi fileApi, MediaFireFile file, string newName, DateTime? modificationTime = null)
         {
             return fileApi.Rename(file.QuickKey, newName, modificationTime);
@@ -238,7 +222,6 @@ namespace MediaFireSDK.Core
         /// Moves the file to the trash can.
         /// </summary>
         /// <param name="file">The file.</param>
-        /// <returns></returns>
         public static Task Delete(this IMediaFireFileApi fileApi, MediaFireFile file)
         {
             return fileApi.Delete(file.QuickKey);
@@ -249,7 +232,6 @@ namespace MediaFireSDK.Core
         /// </summary>
         /// <param name="file">The file.</param>
         /// <param name="folder">The destination folder to move the file. If it's not passed, then the file will be moved to the root folder.</param>
-        /// <returns></returns>
         public static Task Move(this IMediaFireFileApi fileApi, MediaFireFile file, MediaFireFolder folder)
         {
             return fileApi.Move(file.QuickKey, folder.FolderKey);

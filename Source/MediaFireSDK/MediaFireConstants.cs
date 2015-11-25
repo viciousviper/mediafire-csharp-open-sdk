@@ -87,6 +87,7 @@
         public const string UploadMethodsPath = "upload/";
         public const string Simple = UploadMethodsPath + "simple.php";
         public const string PollUpload = UploadMethodsPath + "poll_upload.php";
+        public const string Check = UploadMethodsPath + "check.php";
     }
 
 
@@ -135,6 +136,9 @@
         public const string PrivacyRecursive = "privacy_recursive ";
 
         public const string SearchAll = "search_all";
+
+        public const string Hash = "hash";
+        public const string Size = "size";
     }
 
     internal static class MediaFireErrorMessages
@@ -142,6 +146,7 @@
         public const string RequestMustBeAuthenticated = "Please authenticate before making this request.";
         public const string FileMustContainADirectLink = "File must contain a direct link to be able to download.";
         public const string UploadErrorFormat = "Upload Error {0}";
+        public const string CheckParamsError = "If the fileName parameter is not setted, the hash and file size are required.";
     }
 
     public static class MediaFireUploadResult

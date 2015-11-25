@@ -8,7 +8,7 @@
     <owners>MediaFire</owners>
     <licenseUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk</projectUrl>
-    <iconUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk/blob/master/MediaFireLogo.png</iconUrl>
+    <iconUrl>https://github.com/MediaFire/mediafire-csharp-open-sdk/raw/master/MediaFireLogo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This Portable Class Library enables your applications to integrate with the MediaFire API.
 	Supported Platforms:
@@ -21,5 +21,9 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>MediaFire Cloud API</tags>
+	
+	<dependencies>
+      <dependency id="Microsoft.Net.Http" version="2.2.22" />
+    </dependencies>
   </metadata>
 </package>

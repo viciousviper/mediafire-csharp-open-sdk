@@ -14,7 +14,6 @@ namespace MediaFireSDK.Core
         /// Check for the status of a current Upload.
         /// </summary>
         /// <param name="key">An upload key, obtained using the upload methods.</param>
-        /// <returns></returns>
         Task<MediaFireUploadDetails> PollUpload(string key);
 
         /// <summary>
@@ -25,7 +24,6 @@ namespace MediaFireSDK.Core
         /// <param name="folderKey">The destination folder to store the file. If it's not passed, then the file will be stored in the root folder.</param>
         /// <param name="actionOnDuplicate">Specifies the action to take when the file already exists, by name, in the destination folder. skip ignores the upload, keep uploads the file and makes the file name unique by appending a number to it, and replace overwrites the old file, possibly adding to its version history.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        /// <returns></returns>
         Task<MediaFireUploadConfiguration> GetUploadConfiguration(
             string fileName,
             long size,
@@ -38,7 +36,23 @@ namespace MediaFireSDK.Core
         /// Returns the upload info, of an upload performed outside the sdk.
         /// </summary>
         /// <param name="content">The raw json returned at the end of the upload configuration.</param>
-        /// <returns></returns>
         Task<MediaFireUploadDetails> ProcessUploadResponse(string content);
+
+        /// <summary>
+        /// Checks if a duplicate filename exists in the destination folder and verifies folder permissions for non-owner uploads.
+        /// </summary>
+        /// <param name="fileName">The name of the file to be created.</param>
+        /// <param name="size">The size of the file, in bytes.</param>
+        /// <param name="deviceId">An integer specifying on which user device to look for data.</param>
+        /// <param name="hash">The SHA256 hash of the file being uploaded</param>
+        /// <param name="folderKey">The destination folder to store the file. If it's not passed, then the file will be stored in the root folder.</param>
+        /// <returns></returns>
+        Task<MediaFireUploadCheckDetails> Check(
+            string fileName,
+            long size = 0,
+            string deviceId = null,
+            string hash = null,
+            string folderKey = null
+            );
     }
 }

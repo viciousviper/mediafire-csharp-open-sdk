@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="WinRt.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinRt"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:WinRt.ViewModels"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <local:MediaFireFileToThumbnailConverter x:Key="MediaFireFileToThumbnailConverter" />
+    </Page.Resources>
+    <Page.DataContext>
+        <viewModels:SdkTestViewModel></viewModels:SdkTestViewModel>
+    </Page.DataContext>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel  Margin="24">
+            <TextBlock Text="User Details" Style="{StaticResource HeaderTextBlockStyle}"/>
+            <TextBlock >
+                <Run Text="Email "></Run>
+                <Run Text="{Binding User.Email}"></Run>
+            </TextBlock>
+            <TextBlock >
+                <Run Text="DisplayName "></Run>
+                <Run Text="{Binding User.DisplayName}"></Run>
+            </TextBlock>
+            <TextBlock >
+                <Run Text="UsedStorageSize "></Run>
+                <Run Text="{Binding User.UsedStorageSize}"></Run>
+            </TextBlock>
+            <TextBlock >
+                <Run Text="StorageLimit "></Run>
+                <Run Text="{Binding User.StorageLimit}"></Run>
+            </TextBlock>
+        </StackPanel>
+
+        <StackPanel HorizontalAlignment="Right" Margin="24">
+            <TextBlock  Style="{StaticResource SubheaderTextBlockStyle}">
+                <Run Text="Downloading"/>
+                <LineBreak/>
+                <Run Text="{Binding DownloadProgress}"/>
+            </TextBlock>
+
+            <Button Content="Upload" Command="{Binding UploadCommand}"/>
+            <TextBlock  Style="{StaticResource SubheaderTextBlockStyle}">
+                <Run Text="Uploading"/>
+                <LineBreak/>
+                <Run Text="{Binding UploadProgress}"/>
+            </TextBlock>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Root Files" Style="{StaticResource HeaderTextBlockStyle}" />
+            <ListView ItemsSource="{Binding Files}" Grid.Row="1" IsItemClickEnabled="True" ItemClick="DownloadAndOpenFile">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding Converter={StaticResource MediaFireFileToThumbnailConverter}}"/>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text="{Binding Size}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+    </Grid>
+</Page>

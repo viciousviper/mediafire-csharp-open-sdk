@@ -29,9 +29,7 @@ namespace MediaFireSDK.Core
         /// <param name="firstName">The first name of the user.</param>
         /// <param name="lastName">The last name of the user.</param>
         /// <param name="displayName">The name to be displayed on the user's shared items.</param>
-        /// <returns></returns>
-        Task<RegisterResponse> Register(string email, string password, string firstName = null, string lastName = null,
-            string displayName = null);
+        Task<RegisterResponse> Register(string email, string password, string firstName = null, string lastName = null, string displayName = null);
 
         /// <summary>
         /// Returns the HTML format of the MediaFire Terms of Service and its revision number, date, whether the user has accepted it not not, and the acceptance token (if the user has not accepted the latest terms). 
@@ -43,13 +41,11 @@ namespace MediaFireSDK.Core
         /// Records that the session user has accepted the MediaFire Terms of Service by sending the acceptance token. 
         /// </summary>
         /// <param name="acceptanceToken">The token returned by FetchTermsOfService.</param>
-        /// <returns></returns>
         Task AcceptTermsOfService(string acceptanceToken);
 
         /// <summary>
         /// Removes from the SDK all user information.
         /// </summary>
-        /// <returns></returns>
         Task Logout();
     }
 }

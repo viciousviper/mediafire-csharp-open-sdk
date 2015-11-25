@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Http;
 using MediaFireSDK.Model;
+using MediaFireSDK.Model.Errors;
 using MediaFireSDK.Model.Responses;
 using Newtonsoft.Json;
 
@@ -75,6 +76,30 @@ namespace MediaFireSDK.Core
                 .Parameter(ApiParameters.FolderKey, folderKey)
                 .Parameter(ApiParameters.ActionOnDuplicate, actionOnDuplicate.ToApiParamenter())
                 .Parameter(ApiParameters.ModificationTime, modificationTime);
+        }
+
+        public async Task<MediaFireUploadCheckDetails> Check(string fileName, long size = 0, string deviceId = null, string hash = null, string folderKey = null)
+        {
+            var requestConfig = await RequestController.CreateHttpRequest(ApiUploadMethods.Check);
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                if (size == 0 && string.IsNullOrEmpty(hash))
+                    throw new MediaFireException(MediaFireErrorMessages.CheckParamsError);
+
+                requestConfig
+                    .Parameter(ApiParameters.Hash, hash)
+                    .Parameter(ApiParameters.Size, size);
+
+            }
+            else
+                requestConfig.Parameter(ApiParameters.FileName, fileName);
+
+            requestConfig
+                .Parameter(ApiParameters.DeviceId, deviceId)
+                .Parameter(ApiParameters.FolderKey, folderKey);
+
+            return await RequestController.Get<MediaFireUploadCheckDetails>(requestConfig);
         }
     }
 }

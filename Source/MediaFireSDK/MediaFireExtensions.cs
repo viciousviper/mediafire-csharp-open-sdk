@@ -13,7 +13,6 @@ namespace MediaFireSDK
         /// Transforms a yes/no string to a bool.
         /// </summary>
         /// <param name="value">yes or no strings</param>
-        /// <returns></returns>
         public static bool FromMediaFireYesNo(this string value)
         {
             return value.Equals(MediaFireApiConstants.MediaFireYes, StringComparison.OrdinalIgnoreCase);
@@ -23,7 +22,6 @@ namespace MediaFireSDK
         /// Transforms a bool to a yes/no string.
         /// </summary>
         /// <param name="value">yes or no strings</param>
-        /// <returns></returns>
         public static string ToMediaFireYesNo(this bool? value)
         {
             return value == null ? String.Empty : value.Value.ToMediaFireYesNo();
@@ -33,7 +31,6 @@ namespace MediaFireSDK
         /// Transforms a bool to a yes/no string.
         /// </summary>
         /// <param name="value">yes or no strings</param>
-        /// <returns></returns>
         public static string ToMediaFireYesNo(this bool value)
         {
             return value ? MediaFireApiConstants.MediaFireYes : MediaFireApiConstants.MediaFireNo;
@@ -43,7 +40,6 @@ namespace MediaFireSDK
         /// Transforms the enum MediaFireActionOnDuplicate to a MediaFire api parameter.
         /// </summary>
         /// <param name="actionOnDuplicate">The parameter to be converted.</param>
-        /// <returns></returns>
         internal static string ToApiParamenter(this MediaFireActionOnDuplicate actionOnDuplicate)
         {
             return actionOnDuplicate.ToString().ToLower();
@@ -53,7 +49,6 @@ namespace MediaFireSDK
         /// Transforms the enum MediaFirePrivacy to a MediaFire api parameter.
         /// </summary>
         /// <param name="privacy">The parameter to be converted.</param>
-        /// <returns></returns>
         internal static string ToApiParameter(this MediaFirePrivacy? privacy)
         {
             if (privacy.HasValue == false)
@@ -68,7 +63,6 @@ namespace MediaFireSDK
         /// Transforms the enum MediaFireLinkType to a MediaFire api parameter.
         /// </summary>
         /// <param name="linkType">The parameter to be converted.</param>
-        /// <returns></returns>
         internal static string ToApiParameter(this MediaFireLinkType linkType)
         {
             var type = String.Empty;
