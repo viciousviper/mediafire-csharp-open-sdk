@@ -26,7 +26,7 @@ var config = new MediaFireApiConfiguration
                    apiVersion: "1.4", //desired api version
                    automaticallyRenewToken: true, // Lets the SDK automatically renew the session token.
                    chunkTransferBufferSize: 4096, // The buffer size to be used on Download and Upload operations.
-                   useHttpV1:true //workaround on WinRt platform issue, should only be true on WinRt (Windows 8.1). 
+                   useHttpV1:true //On some platforms, the client will throw the error "The server committed a protocol violation. Section=ResponseStatusLine". In that cases set this property to true. 
                );
 ```
 
