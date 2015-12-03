@@ -32,7 +32,7 @@
 
         /// <summary>
         /// Use version 1.0 of http
-        /// <remarks>This should be used on Windows 8.1 apps to workaround a bug while uploading.</remarks>
+        /// <remarks>On some platforms, the client will throw the error "The server committed a protocol violation. Section=ResponseStatusLine". In that cases set this property to true</remarks>
         /// </summary>
         public bool UseHttpV1 { get; private set; }
 
