@@ -56,7 +56,7 @@ namespace MediaFireSDK.Model
         [JsonProperty("file_count")]
         public int FileCount { get; set; }
         [JsonProperty("folder_count")]
-        public string FolderCount { get; set; }
+        public int FolderCount { get; set; }
         [JsonProperty("dropbox_enabled")]
         internal string DropboxEnabled { get; set; }
         public bool IsDropboxEnabled
@@ -71,13 +71,13 @@ namespace MediaFireSDK.Model
         /// This property is only availabled if the request that generated it had the details set to true.
         /// </remarks>
         [JsonProperty("total_folders")]
-        public long TotalFolders { get; set; }
+        public int TotalFolders { get; set; }
 
         /// <remarks>
         /// This property is only availabled if the request that generated it had the details set to true.
         /// </remarks>
         [JsonProperty("total_files")]
-        public long TotalFiles { get; set; }
+        public int TotalFiles { get; set; }
 
         /// <remarks>
         /// This property is only availabled if the request that generated it had the details set to true.

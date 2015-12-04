@@ -53,9 +53,9 @@ namespace MediaFireSDK.Model.Responses
         public string Name { get; set; }
 
         [JsonProperty("total_folders")]
-        public long TotalFolders { get; set; }
+        public int TotalFolders { get; set; }
         [JsonProperty("total_files")]
-        public long TotalFiles { get; set; }
+        public int TotalFiles { get; set; }
         [JsonProperty("total_size")]
         public long TotalSize { get; set; }
     }
