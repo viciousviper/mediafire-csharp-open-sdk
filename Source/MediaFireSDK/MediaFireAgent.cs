@@ -19,10 +19,10 @@ namespace MediaFireSDK
             Configuration = configuration;
             var requestController = new MediaFireRequestController(configuration);
             var cryptoService = new BouncyCastleCryptoService();
-            User = new MediaFireUserApi(requestController, cryptoService);
+            User = new MediaFireUserApi(requestController, configuration,cryptoService);
             System = new MediaFireSystemApi(requestController);
             Folder = new MediaFireFolderApi(requestController);
-            Image = new MediaFireImageApi();
+            Image = new MediaFireImageApi(requestController);
             File = new MediaFireFileApi(requestController, configuration, this);
             Upload = new MediaFireUploadApi(requestController);
         }

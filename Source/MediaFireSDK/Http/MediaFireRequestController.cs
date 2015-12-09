@@ -120,7 +120,7 @@ namespace MediaFireSDK.Http
 
                 error = e;
             }
-
+             
             //
             //  Check if MediaFire returned any error.
             //
@@ -149,7 +149,7 @@ namespace MediaFireSDK.Http
             //
             //  Renew session token
             //
-            await SessionBroker.RenewSessionToken(this);
+            await SessionBroker.RetrieveNewSessionToken();
 
             //
             //  Re authenticate the request with the renewed token

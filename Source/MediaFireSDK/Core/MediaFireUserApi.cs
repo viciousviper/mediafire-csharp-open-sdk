@@ -14,8 +14,8 @@ namespace MediaFireSDK.Core
     {
         private readonly ICryptoService _cryptoService;
 
-        public MediaFireUserApi(MediaFireRequestController requestController, ICryptoService cryptoService)
-            : base(requestController)
+        public MediaFireUserApi(MediaFireRequestController requestController, MediaFireApiConfiguration configuration, ICryptoService cryptoService)
+            : base(requestController,configuration)
         {
             _cryptoService = cryptoService;
         }
@@ -27,16 +27,17 @@ namespace MediaFireSDK.Core
 
             var sessionBroker = new MediaFireSessionBroker(
                 _cryptoService,
-                RequestController.Configuration.AppId,
-                RequestController.Configuration.ApiKey,
+                Configuration,
                 email,
-                password
+                password,
+                RequestController
                 );
 
 
-            var sessionToken = await sessionBroker.GetSessionToken(RequestController);
+            var sessionToken = await sessionBroker.GetSessionToken();
 
             RequestController.SessionBroker = sessionBroker;
+
 
             return sessionToken;
 

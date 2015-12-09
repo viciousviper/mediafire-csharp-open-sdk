@@ -75,7 +75,20 @@ namespace MediaFireSDK.Model
         public string Gender { get; set; }
 
         [JsonProperty("birth_date")]
-        public DateTime? BirthDate { get; set; }
+        internal string BirthDateInternal { get; set; }
+
+        public DateTime? BirthDate
+        {
+            get
+            {
+                DateTime dt;
+                if (DateTime.TryParse(BirthDateInternal, out dt))
+                {
+                    return dt;
+                }
+                return null;
+            }
+        }
 
         public string Location { get; set; }
 

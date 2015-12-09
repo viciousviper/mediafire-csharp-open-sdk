@@ -50,7 +50,8 @@ namespace MediaFireSDK.Model
     {
         public MediaFireFolder()
         {
-            TotalFiles = TotalFolders = TotalSize = -1;
+            TotalFiles = TotalFolders = -1;
+            TotalSize = -1;
         }
         public string FolderKey { get { return Key; } set { Key = value; } }
         [JsonProperty("file_count")]

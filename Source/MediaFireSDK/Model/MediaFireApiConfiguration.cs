@@ -1,4 +1,6 @@
-﻿namespace MediaFireSDK.Model
+﻿using System;
+
+namespace MediaFireSDK.Model
 {
     /// <summary>
     /// The mediafire sdk configuration.
@@ -36,8 +38,15 @@
         /// </summary>
         public bool UseHttpV1 { get; private set; }
 
+        /// <summary>
+        /// Configures a timer so that every SessionRenewPeriod minutes the SDK can renew automatically the session. 
+        /// </summary>
+        public bool PeriodicallyRenewToken { get; private set; }
 
-        public MediaFireApiConfiguration(string apiKey, string appId, string apiVersion = "1.4", bool automaticallyRenewToken = true, int chunkTransferBufferSize = 4096, bool useHttpV1 = false)
+        public TimeSpan SessionRenewPeriod { get; set; }
+
+
+        public MediaFireApiConfiguration(string apiKey, string appId, string apiVersion = "1.4", bool automaticallyRenewToken = true, int chunkTransferBufferSize = 4096, bool useHttpV1 = false, bool periodicallyRenewToken = false)
         {
             ApiKey = apiKey;
             AppId = appId;
@@ -45,6 +54,8 @@
             AutomaticallyRenewToken = automaticallyRenewToken;
             ChunkTransferBufferSize = chunkTransferBufferSize;
             UseHttpV1 = useHttpV1;
+            PeriodicallyRenewToken = periodicallyRenewToken;
+            SessionRenewPeriod = TimeSpan.FromMinutes(7);
         }
     }
 }
