@@ -13,7 +13,7 @@ namespace MediaFireSDK.Http
 
 
 
-    internal static class HttpHelpers
+    public static class MediaFireHttpHelpers
     {
 
 

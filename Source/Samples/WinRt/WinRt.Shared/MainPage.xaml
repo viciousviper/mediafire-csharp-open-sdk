@@ -7,9 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="using:WinRt.ViewModels"
     mc:Ignorable="d">
-    <Page.Resources>
-        <local:MediaFireFileToThumbnailConverter x:Key="MediaFireFileToThumbnailConverter" />
-    </Page.Resources>
     <Page.DataContext>
         <viewModels:SdkTestViewModel></viewModels:SdkTestViewModel>
     </Page.DataContext>
@@ -64,7 +61,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="{Binding Converter={StaticResource MediaFireFileToThumbnailConverter}}"/>
+                            <Image Loaded="LoadThumbnail" />
                             <StackPanel>
                                 <TextBlock Text="{Binding Name}"/>
                                 <TextBlock Text="{Binding Size}"/>

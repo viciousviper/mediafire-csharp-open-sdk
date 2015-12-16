@@ -21,7 +21,7 @@ namespace MediaFireSDK.Core
         }
 
 
-        public async Task<string> Authenticate(string email, string password)
+        public async Task<string> GetSessionToken(string email, string password)
         {
             RequestController.SessionBroker = null;
 
@@ -43,24 +43,16 @@ namespace MediaFireSDK.Core
 
         }
 
-        public async Task<MediaFireUserDetails> GetInfo()
-        {
-
-            var requestConfig = await RequestController.CreateHttpRequest(ApiUserMethods.GetInfo);
-            var response = await RequestController.Get<GetUserInfoResponse>(requestConfig);
-            return response.UserDetails;
-        }
-
         public async Task<RegisterResponse> Register(string email, string password, string firstName = null, string lastName = null, string displayName = null)
         {
-            var requestConfig = await RequestController.CreateHttpRequest(ApiUserMethods.Register, authenticate: false);
+            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUserMethods.Register, authenticate: false);
 
             requestConfig
-                .Parameter(ApiParameters.Email, email)
-                .Parameter(ApiParameters.Password, password)
-                .Parameter(ApiParameters.FirstName, firstName)
-                .Parameter(ApiParameters.LastName, lastName)
-                .Parameter(ApiParameters.DisplayName, displayName);
+                .Parameter(MediaFireApiParameters.Email, email)
+                .Parameter(MediaFireApiParameters.Password, password)
+                .Parameter(MediaFireApiParameters.FirstName, firstName)
+                .Parameter(MediaFireApiParameters.LastName, lastName)
+                .Parameter(MediaFireApiParameters.DisplayName, displayName);
 
             return await RequestController.Post<RegisterResponse>(requestConfig);
 
@@ -69,17 +61,17 @@ namespace MediaFireSDK.Core
 
         public async Task<UserTermsOfService> FetchTermsOfService()
         {
-            var resp = await Get<FetchTosResponse>(ApiUserMethods.FetchTos);
+            var resp = await Get<FetchTosResponse>(MediaFireApiUserMethods.FetchTos);
             return resp.TermsOfService;
         }
 
         public async Task AcceptTermsOfService(string acceptanceToken)
         {
-            var requestConfig = await RequestController.CreateHttpRequest(ApiUserMethods.AcceptTos);
+            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUserMethods.AcceptTos);
 
-            requestConfig.Parameter(ApiParameters.AcceptanceToken, acceptanceToken);
+            requestConfig.Parameter(MediaFireApiParameters.AcceptanceToken, acceptanceToken);
 
-            await RequestController.Post<EmptyResponse>(requestConfig);
+            await RequestController.Post<MediaFireEmptyResponse>(requestConfig);
         }
 
         public Task Logout()

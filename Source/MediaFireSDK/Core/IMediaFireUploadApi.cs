@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Model;
 using MediaFireSDK.Model.Responses;
@@ -54,5 +56,21 @@ namespace MediaFireSDK.Core
             string hash = null,
             string folderKey = null
             );
+
+        /// <summary>
+        /// Uploads <paramref name="content"/> to MediaFire given a <paramref name="uploadConfiguration"/> retrieved from GetUploadConfiguration.
+        /// </summary>
+        /// <param name="uploadConfiguration">An upload configuration previously retrieved from GetUploadConfiguration</param>
+        /// <param name="content">The content stream.</param>
+        /// <param name="progress">A callback to receive progress updates.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
+        /// <returns></returns>
+        Task<MediaFireUploadDetails> Simple(
+            MediaFireUploadConfiguration uploadConfiguration, 
+            Stream content, 
+            IProgress<MediaFireOperationProgress> progress = null, 
+            CancellationToken? token = null
+            );
+
     }
 }

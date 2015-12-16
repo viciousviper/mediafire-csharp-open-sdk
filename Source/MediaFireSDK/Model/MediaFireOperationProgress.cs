@@ -11,18 +11,17 @@ namespace MediaFireSDK.Model
     /// </summary>
     public class MediaFireOperationProgress
     {
-
-        internal MediaFireOperationProgress() { }
-
-        /// <remarks>
-        /// This property value is in bytes.
-        /// </remarks>
-        public long TotalSize { get; internal set; }
+        public MediaFireOperationProgress() { }
 
         /// <remarks>
         /// This property value is in bytes.
         /// </remarks>
-        public long CurrentSize { get; internal set; }
+        public long TotalSize { get;  set; }
+
+        /// <remarks>
+        /// This property value is in bytes.
+        /// </remarks>
+        public long CurrentSize { get;  set; }
 
         /// <remarks>
         /// A percentage value between 0 and 1

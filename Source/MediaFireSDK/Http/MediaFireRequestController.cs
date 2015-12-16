@@ -34,6 +34,11 @@ namespace MediaFireSDK.Http
             return _baseApiPath + path;
         }
 
+        public string RemoveBaseUrlFromUrl(string url)
+        {
+            return url.Replace(_baseApiPath, string.Empty);
+        }
+
         public async Task<HttpRequestConfiguration> CreateHttpRequest(string relativePath, bool authenticate = true,
             bool isChunkedOperation = false)
         {
@@ -63,8 +68,8 @@ namespace MediaFireSDK.Http
             HttpRequestConfiguration request)
         {
             request
-                .Parameter(ApiParameters.AppId, Configuration.AppId)
-                .Parameter(ApiParameters.ResponseFormat, MediaFireApiConstants.JsonFormat);
+                .Parameter(MediaFireApiParameters.AppId, Configuration.AppId)
+                .Parameter(MediaFireApiParameters.ResponseFormat, MediaFireApiConstants.JsonFormat);
 
             if (authenticate == false)
                 return request;
@@ -128,7 +133,7 @@ namespace MediaFireSDK.Http
             try
             {
                 var errorDetails =
-                    JsonConvert.DeserializeObject<MediaFireResponseContainer<ErrorResponse>>(error.ResponseContent);
+                    JsonConvert.DeserializeObject<MediaFireResponseContainer<MediaFireErrorResponse>>(error.ResponseContent);
                 detailedError = new MediaFireApiException(error, request, errorDetails.Response);
             }
             catch (Exception)
@@ -142,7 +147,7 @@ namespace MediaFireSDK.Http
             //
             //  Check if the error was about an expired session token, if so try to renew it.
             //
-            if (detailedError.Error != ApiErrorCodes.InvalidToken || Configuration.AutomaticallyRenewToken == false)
+            if (detailedError.Error != MediaFireApiErrorCodes.InvalidToken || Configuration.AutomaticallyRenewToken == false)
                 throw detailedError;
 
 

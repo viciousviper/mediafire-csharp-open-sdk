@@ -13,14 +13,14 @@ namespace MediaFireSDK.Model.Responses
         public string SessionToken { get; set; }
     }
 
-   
-    internal class GetUserInfoResponse : MediaFireResponseBase
+
+    public class MediaFireGetUserInfoResponse : MediaFireResponseBase
     {
         [JsonProperty("user_info")]
         public MediaFireUserDetails UserDetails { get; set; }
     }
 
-   
+
 
 
     internal class FetchTosResponse : MediaFireResponseBase

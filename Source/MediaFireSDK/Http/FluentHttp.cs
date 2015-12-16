@@ -157,7 +157,7 @@ namespace MediaFireSDK.Http
 
         public string GetConfiguredPath()
         {
-            return HttpHelpers.BuildQueryString(Parameters, Path);
+            return MediaFireHttpHelpers.BuildQueryString(Parameters, Path);
         }
     }
 

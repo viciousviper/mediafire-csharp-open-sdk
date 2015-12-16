@@ -22,8 +22,18 @@ namespace MediaFireSDK.Model
         public List<KeyValuePair<string, string>> RequestHeaders { get; set; }
 
         /// <summary>
+        /// The upload full request endpoint
+        /// </summary>
+        public string Endpoint { get; set; }
+
+        /// <summary>
         /// The upload request url
         /// </summary>
-        public string  RequestUrl { get; set; }
+        public string RequestUrl { get; set; }
+
+        /// <summary>
+        /// The file size.
+        /// </summary>
+        public long Size { get; set; }
     }
 }

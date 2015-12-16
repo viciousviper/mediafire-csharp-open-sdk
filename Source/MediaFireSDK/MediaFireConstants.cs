@@ -5,7 +5,7 @@
     public static class MediaFireApiConstants
     {
         internal const string BaseUrl = "https://www.mediafire.com/api";
-        internal const string PublicFolderUrlFormat = "https://www.mediafire.com/folder/{0}";
+        public const string PublicFolderUrlFormat = "https://www.mediafire.com/folder/{0}";
         internal const string BaseUrlWithVersionFormat = "{0}/{1}/";
         internal const string JsonFormat = "json";
 
@@ -21,9 +21,9 @@
         internal const string LinkTypeWatch = "watch";
         internal const string LinkTypeStreaming = "streaming";
 
-       
-        internal const string MediaFireFile = "file";
-        internal const string MediaFireFolder = "folder";
+
+        public const string MediaFireFile = "file";
+        public const string MediaFireFolder = "folder";
 
         internal const string SimpleUploadContentTypeValue = "application/octet-stream";
         internal const string ContentTypeHeader = "Content-Type";
@@ -43,7 +43,7 @@
     /// Api Methods contants.
     /// 
 
-    internal static class ApiUserMethods
+    public static class MediaFireApiUserMethods
     {
         public const string UserMethodsPath = "user/";
         public const string GetSessionToken = UserMethodsPath + "get_session_token.php";
@@ -54,13 +54,13 @@
         public const string AcceptTos = UserMethodsPath + "accept_tos.php";
     }
 
-    internal static class ApiSystemMethods
+    public static class MediaFireApiSystemMethods
     {
         public const string SystemMethodsPath = "system/";
         public const string GetInfo = SystemMethodsPath + "get_info.php";
     }
 
-    internal static class ApiFolderMethods
+    public static class MediaFireApiFolderMethods
     {
         public const string FolderMethodsPath = "folder/";
         public const string GetContent = FolderMethodsPath + "get_content.php";
@@ -72,7 +72,7 @@
         public const string Search = FolderMethodsPath + "search.php";
     }
 
-    internal static class ApiFileMethods
+    public static class MediaFireApiFileMethods
     {
         public const string FileMethodsPath = "file/";
         public const string GetInfo = FileMethodsPath + "get_info.php";
@@ -82,7 +82,7 @@
         public const string Move = FileMethodsPath + "move.php";
     }
 
-    internal static class ApiUploadMethods
+    public static class MediaFireApiUploadMethods
     {
         public const string UploadMethodsPath = "upload/";
         public const string Simple = UploadMethodsPath + "simple.php";
@@ -91,7 +91,7 @@
     }
 
 
-    internal static class ApiParameters
+    public static class MediaFireApiParameters
     {
         public const string Signature = "signature";
         public const string ResponseFormat = "response_format";
@@ -141,7 +141,7 @@
         public const string Size = "size";
     }
 
-    internal static class MediaFireErrorMessages
+    public static class MediaFireErrorMessages
     {
         public const string RequestMustBeAuthenticated = "Please authenticate before making this request.";
         public const string FileMustContainADirectLink = "File must contain a direct link to be able to download.";
@@ -172,7 +172,7 @@
         public const int NoMoreRequestsForThisKey = 99;
     }
     
-    public static class ApiErrorCodes
+    public static class MediaFireApiErrorCodes
     {
         public const int Internal = 101;
         public const int MissingKey = 102;

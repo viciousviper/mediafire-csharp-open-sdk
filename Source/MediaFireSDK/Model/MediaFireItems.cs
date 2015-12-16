@@ -95,7 +95,7 @@ namespace MediaFireSDK.Model
         public string FileName { get { return Name; } set { Name = value; } }
         public long Size { get; set; }
         [JsonProperty("password_protected")]
-        internal string PasswordProtected { get; set; }
+        public string PasswordProtected { get; set; }
         public bool IsPasswordProtected
         {
             get
