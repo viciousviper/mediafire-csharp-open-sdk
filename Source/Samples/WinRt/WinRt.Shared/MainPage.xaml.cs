@@ -32,11 +32,11 @@ namespace WinRt
         private SdkTestViewModel _viewModel;
         private IMediaFireAgent _agent;
 
-        private const string AppId = "";
-        private const string AppKey = "";
+        private const string AppId = "48092";
+        private const string AppKey = "djufwhhhb92d7dfrtr83nir92tu6dyr6i36ittuc";
 
-        private const string Email = "";
-        private const string Password = "";
+        private const string Email = "amazing.red@gmail.com";
+        private const string Password = "testpwd";
 
         public MainPage()
         {
