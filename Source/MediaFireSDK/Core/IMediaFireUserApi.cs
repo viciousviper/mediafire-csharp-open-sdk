@@ -13,13 +13,7 @@ namespace MediaFireSDK.Core
         /// <param name="password">The password of the user's MediaFire account.</param>
         /// <returns>The user session token</returns>
         /// <remarks>This method is not thread-safe.</remarks>
-        Task<string> Authenticate(string email, string password);
-
-        /// <summary>
-        /// Returns the user personal information and account vitals.
-        /// </summary>
-        /// <returns>The authenticated user information</returns>
-        Task<MediaFireUserDetails> GetInfo();
+        Task<string> GetSessionToken(string email, string password);
 
         /// <summary>
         /// Register an individual with MediaFire and create a user account.

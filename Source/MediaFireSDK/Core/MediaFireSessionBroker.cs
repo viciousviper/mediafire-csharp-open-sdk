@@ -54,7 +54,7 @@ namespace MediaFireSDK.Core
         {
             await WaitForRenewal();
 
-            request.AddOrReplaceParameter(ApiParameters.SessionToken, CurrentSessionToken);
+            request.AddOrReplaceParameter(MediaFireApiParameters.SessionToken, CurrentSessionToken);
         }
 
         public async Task RetrieveNewSessionToken()
@@ -86,12 +86,12 @@ namespace MediaFireSDK.Core
 
         private async Task<string> GetSessionTokenInternal()
         {
-            var httpRequest = await _requestController.CreateHttpRequest(ApiUserMethods.GetSessionToken, authenticate: false);
+            var httpRequest = await _requestController.CreateHttpRequest(MediaFireApiUserMethods.GetSessionToken, authenticate: false);
 
             httpRequest
-                .Parameter(ApiParameters.Email, _email)
-                .Parameter(ApiParameters.Password, _password)
-                .Parameter(ApiParameters.Signature, GetMediaFireSignature(_email, _password));
+                .Parameter(MediaFireApiParameters.Email, _email)
+                .Parameter(MediaFireApiParameters.Password, _password)
+                .Parameter(MediaFireApiParameters.Signature, GetMediaFireSignature(_email, _password));
 
 
             return await RetrieveSessionToken(httpRequest);
@@ -99,9 +99,9 @@ namespace MediaFireSDK.Core
 
         private async Task<string> RenewSessionTokenInternal()
         {
-            var httpRequest = await _requestController.CreateHttpRequest(ApiUserMethods.RenewSessionToken, authenticate: false);
+            var httpRequest = await _requestController.CreateHttpRequest(MediaFireApiUserMethods.RenewSessionToken, authenticate: false);
             httpRequest
-                .Parameter(ApiParameters.SessionToken, CurrentSessionToken);
+                .Parameter(MediaFireApiParameters.SessionToken, CurrentSessionToken);
 
             return await RetrieveSessionToken(httpRequest);
         }

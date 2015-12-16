@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
@@ -13,7 +15,10 @@ using Windows.System;
 using Windows.UI.Popups;
 using MediaFireSDK;
 using MediaFireSDK.Core;
+using MediaFireSDK.Http;
 using MediaFireSDK.Model;
+using MediaFireSDK.Model.Errors;
+using MediaFireSDK.Model.Responses;
 
 namespace WinRt.ViewModels
 {
@@ -119,9 +124,16 @@ namespace WinRt.ViewModels
                     ?? (_load = new SafeCommand(
                                          async () =>
                                          {
-                                             User = await _agent.User.GetInfo();
+                                             User = (await _agent.GetAsync<MediaFireGetUserInfoResponse>(MediaFireApiUserMethods.GetInfo)).UserDetails;
 
-                                             var fileContent = await _agent.Folder.GetFolderContent("", MediaFireFolderContentType.Files);
+
+                                             var fileContent = (await _agent.GetAsync<MediaFireGetContentResponse>(
+                                                 MediaFireApiFolderMethods.GetContent,
+                                                 new Dictionary<string, object>
+                                                 {
+                                                     {MediaFireApiParameters.FolderKey, ""},
+                                                     {MediaFireApiParameters.ContentType, MediaFireFolderContentType.Files.ToApiParameter()}
+                                                 })).FolderContent;
 
                                              foreach (var mediaFireFile in fileContent.Files)
                                              {
@@ -148,15 +160,69 @@ namespace WinRt.ViewModels
                                               var storageFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(file.FileName, CreationCollisionOption.OpenIfExists);
 
                                               var fileStream = (await storageFile.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite();
-                                              await _agent.File.Download(file.QuickKey, fileStream, new Progress<MediaFireOperationProgress>(
-                                                  (progress) =>
+
+                                              await
+                                                  Download(file.QuickKey, fileStream, CancellationToken.None, (new Progress<MediaFireOperationProgress>((progress) =>
                                                   {
                                                       DownloadProgress = progress.Percentage.ToString("P");
-                                                  }));
+                                                  })));
 
                                               Launcher.LaunchFileAsync(storageFile);
                                           }));
             }
+        }
+
+
+        public async Task Download(string quickKey, Stream destination, CancellationToken token, IProgress<MediaFireOperationProgress> progress = null)
+        {
+            var links = await GetLinks(quickKey, MediaFireLinkType.DirectDownload);
+            if (links.Count != 0 && string.IsNullOrEmpty(links[0].DirectDownload))
+                throw new MediaFireException(MediaFireErrorMessages.FileMustContainADirectLink);
+
+
+            var fileLink = links[0].DirectDownload;
+
+            if (progress == null)
+                progress = new Progress<MediaFireOperationProgress>();
+
+
+            var cli = new HttpClient();
+            var resp = await cli.SendAsync(new HttpRequestMessage(HttpMethod.Get, fileLink), HttpCompletionOption.ResponseHeadersRead, token);
+
+            resp.EnsureSuccessStatusCode();
+
+            var stream = await resp.Content.ReadAsStreamAsync();
+
+            var progressData = new MediaFireOperationProgress
+            {
+                TotalSize = resp.Content.Headers.ContentLength.Value
+            };
+
+            using (destination)
+            {
+                await
+                    MediaFireHttpHelpers.CopyStreamWithProgress(stream, destination, progress, token, progressData,
+                        _agent.Configuration.ChunkTransferBufferSize);
+            }
+        }
+
+        public async Task<MediaFireLinkCollection> GetLinks(string quickKey, MediaFireLinkType linkType = MediaFireLinkType.All)
+        {
+            var res = await _agent.GetAsync<MediaFireGetLinksResponse>(MediaFireApiFileMethods.GetLinks, new Dictionary<string, object>
+            {
+                {MediaFireApiParameters.QuickKey, quickKey},
+                {MediaFireApiParameters.LinkType, linkType.ToApiParameter()},
+            });
+
+            var col = new MediaFireLinkCollection(res.Links)
+            {
+                DirectDownloadFreeBandwidth = res.DirectDownloadFreeBandwidth,
+                OneTimeDownloadRequestCount = res.OneTimeDownloadRequestCount,
+                OneTimeKeyRequestCount = res.OneTimeKeyRequestCount,
+                OneTimeKeyRequestMaxCount = res.OneTimeKeyRequestMaxCount
+            };
+
+            return col;
         }
 
         private ICommand _uploadCommand;
@@ -178,18 +244,18 @@ namespace WinRt.ViewModels
 
                                              var fileStream = (await file.OpenReadAsync()).AsStreamForRead();
 
-                                             var uploadDetails = await _agent.File.Upload(
-                                                      fileStream,
-                                                      file.Name,
-                                                      size: 0, // The SDK automatically gets the size of the fileStream 
-                                                      folderKey: null,
-                                                      progress: new Progress<MediaFireOperationProgress>(
-                                                          (progress) =>
-                                                          {
-                                                              UploadProgress = progress.Percentage.ToString("P");
-                                                          }),
-                                                     actionOnDuplicate: MediaFireActionOnDuplicate.Replace);
 
+                                             var uploadConfig = await _agent.Upload.GetUploadConfiguration(file.Name, fileStream.Length, null, MediaFireActionOnDuplicate.Skip);
+
+                                             var uploadDetails = await _agent.Upload.Simple(uploadConfig, fileStream,
+                                                 new Progress<MediaFireOperationProgress>(
+                                                     (progress) =>
+                                                     {
+                                                         UploadProgress = progress.Percentage.ToString("P");
+                                                     }),
+                                                 CancellationToken.None);
+
+                                             
                                              do
                                              {
                                                  if (uploadDetails.IsComplete && uploadDetails.IsSuccess)

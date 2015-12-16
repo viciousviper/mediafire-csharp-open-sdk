@@ -7,24 +7,24 @@ using Newtonsoft.Json;
 
 namespace MediaFireSDK.Model.Responses
 {
-    internal class GetContentResponse : MediaFireResponseBase
+    public class MediaFireGetContentResponse : MediaFireResponseBase
     {
         [JsonProperty("folder_content")]
         public MediaFireFolderContent FolderContent { get; set; }
     }
 
-    internal class CreateFolderResponse : MediaFireResponseBase
+    public class MediaFireCreateFolderResponse : MediaFireResponseBase
     {
         public string FolderKey { get; set; }
     }
 
-    internal class GetFolderInfoResponse : MediaFireResponseBase
+    public class MediaFireGetFolderInfoResponse : MediaFireResponseBase
     {
         [JsonProperty("folder_info")]
         public MediaFireFolder FolderInfo { get; set; }
     }
 
-    internal class SearchResultItem
+    public class MediaFireSearchResultItem
     {
         public string Type { get; set; }
         public string QuickKey { get; set; }
@@ -60,10 +60,10 @@ namespace MediaFireSDK.Model.Responses
         public long TotalSize { get; set; }
     }
 
-    internal class SearchResponse : MediaFireResponseBase
+    public class MediaFireSearchResponse : MediaFireResponseBase
     {
         [JsonProperty("results_count")]
         public int ResultsCount { get; set; }
-        public SearchResultItem[] Results { get; set; }
+        public MediaFireSearchResultItem[] Results { get; set; }
     }
 }

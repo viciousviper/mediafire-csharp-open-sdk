@@ -7,13 +7,13 @@ using Newtonsoft.Json;
 
 namespace MediaFireSDK.Model.Responses
 {
-    internal class GetFileInfoResponse : MediaFireResponseBase
+    public class MediaFireGetFileInfoResponse : MediaFireResponseBase
     {
         [JsonProperty("file_info")]
         public MediaFireFile FileInfo { get; set; }
     }
 
-    internal class GetLinksResponse : MediaFireResponseBase
+    public class MediaFireGetLinksResponse : MediaFireResponseBase
     {
         public MediaFireLinks[] Links { get; set; }
         [JsonProperty("one_time_download_request_count")]

@@ -36,15 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\IMediaFireFileApi.cs" />
-    <Compile Include="Core\IMediaFireFolderApi.cs" />
-    <Compile Include="Core\IMediaFireSystemApi.cs" />
     <Compile Include="Core\IMediaFireUploadApi.cs" />
     <Compile Include="Core\MediaFireApiBase.cs" />
-    <Compile Include="Core\MediaFireFileApi.cs" />
-    <Compile Include="Core\MediaFireFolderApi.cs" />
     <Compile Include="Core\MediaFireSessionBroker.cs" />
-    <Compile Include="Core\MediaFireSystemApi.cs" />
     <Compile Include="Core\MediaFireUploadApi.cs" />
     <Compile Include="Core\MediaFireUserApi.cs" />
     <Compile Include="Http\HttpClientAgent.cs" />
@@ -54,7 +48,7 @@
     <Compile Include="Model\MediaFireApiConfiguration.cs" />
     <Compile Include="Http\Error\HttpRequestExtendedException.cs" />
     <Compile Include="Http\FluentHttp.cs" />
-    <Compile Include="Http\HttpHelpers.cs" />
+    <Compile Include="Http\MediaFireHttpHelpers.cs" />
     <Compile Include="Http\MediaFireRequestController.cs" />
     <Compile Include="IMediaFireAgent.cs" />
     <Compile Include="Core\IMediaFireUserApi.cs" />

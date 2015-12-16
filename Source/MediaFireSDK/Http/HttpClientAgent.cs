@@ -39,7 +39,7 @@ namespace MediaFireSDK.Http
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return HttpHelpers.CopyStreamWithProgress(_file, stream, _progress, _token, _data, _bufferSize);
+            return MediaFireHttpHelpers.CopyStreamWithProgress(_file, stream, _progress, _token, _data, _bufferSize);
         }
 
         protected override bool TryComputeLength(out long length)
@@ -84,7 +84,7 @@ namespace MediaFireSDK.Http
 
 
             if ((Parameters.Count != 0) && (content != null || method != HttpMethod.Post))
-                Path = HttpHelpers.BuildQueryString(Parameters, Path);
+                Path = MediaFireHttpHelpers.BuildQueryString(Parameters, Path);
             else
             {
                 var parameters = new MultipartFormDataContent();
@@ -141,7 +141,7 @@ namespace MediaFireSDK.Http
 
             using (Stream)
             {
-                await HttpHelpers.CopyStreamWithProgress(respStream, Stream, ProgressOperation, Token, ProgressData, _chunkBufferSize);
+                await MediaFireHttpHelpers.CopyStreamWithProgress(respStream, Stream, ProgressOperation, Token, ProgressData, _chunkBufferSize);
             }
         }
 

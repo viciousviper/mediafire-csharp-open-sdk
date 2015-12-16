@@ -7,7 +7,7 @@ using MediaFireSDK.Model;
 
 namespace MediaFireSDK
 {
-    internal static class MediaFireExtensions
+    public static class MediaFireExtensions
     {
         /// <summary>
         /// Transforms a yes/no string to a bool.
@@ -40,7 +40,7 @@ namespace MediaFireSDK
         /// Transforms the enum MediaFireActionOnDuplicate to a MediaFire api parameter.
         /// </summary>
         /// <param name="actionOnDuplicate">The parameter to be converted.</param>
-        internal static string ToApiParamenter(this MediaFireActionOnDuplicate actionOnDuplicate)
+        public static string ToApiParamenter(this MediaFireActionOnDuplicate actionOnDuplicate)
         {
             return actionOnDuplicate.ToString().ToLower();
         }
@@ -49,7 +49,7 @@ namespace MediaFireSDK
         /// Transforms the enum MediaFirePrivacy to a MediaFire api parameter.
         /// </summary>
         /// <param name="privacy">The parameter to be converted.</param>
-        internal static string ToApiParameter(this MediaFirePrivacy? privacy)
+        public static string ToApiParameter(this MediaFirePrivacy? privacy)
         {
             if (privacy.HasValue == false)
                 return String.Empty;
@@ -63,7 +63,7 @@ namespace MediaFireSDK
         /// Transforms the enum MediaFireLinkType to a MediaFire api parameter.
         /// </summary>
         /// <param name="linkType">The parameter to be converted.</param>
-        internal static string ToApiParameter(this MediaFireLinkType linkType)
+        public static string ToApiParameter(this MediaFireLinkType linkType)
         {
             var type = String.Empty;
             switch (linkType)
@@ -97,5 +97,32 @@ namespace MediaFireSDK
 
             return type;
         }
+
+        public static string ToApiParameter(this MediaFireFolderContentType contentType)
+        {
+            return contentType == MediaFireFolderContentType.Files
+                ? MediaFireApiParameters.ContentTypeFileType
+                : MediaFireApiParameters.ContentTypeFolderType;
+        }
+
+        
+        public static string ToApiParameter(this MediaFireContentFilter[] filters)
+        {
+            if (filters == null || filters.Length == 0)
+                return string.Empty;
+
+            return string.Join(",", filters);
+        }
+
+        public static string ToApiParameter(this MediaFireOrderQuery query)
+        {
+            return query.ToString().ToLower();
+        }
+
+        public static string ToApiParameter(this MediaFireOrderDirection query)
+        {
+            return query.ToString().ToLower();
+        }
+
     }
 }

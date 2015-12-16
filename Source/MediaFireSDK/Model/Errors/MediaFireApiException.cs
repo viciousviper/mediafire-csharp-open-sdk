@@ -12,15 +12,17 @@ namespace MediaFireSDK.Model.Errors
 
     public class MediaFireException : Exception
     {
-        internal MediaFireException()
+        public MediaFireException()
         {
         }
 
-        internal MediaFireException(string message) : base(message)
+        public MediaFireException(string message)
+            : base(message)
         {
         }
 
-        internal MediaFireException(string message, Exception innerException) : base(message, innerException)
+        public MediaFireException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

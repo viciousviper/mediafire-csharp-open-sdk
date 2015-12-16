@@ -27,6 +27,7 @@ namespace MediaFireSDK.Model.Responses
         public T Response { get; set; }
     }
 
-    internal class EmptyResponse : MediaFireResponseBase { }
-    internal class ErrorResponse : MediaFireResponseBase { }
+
+    public class MediaFireEmptyResponse : MediaFireResponseBase { }
+    public class MediaFireErrorResponse : MediaFireResponseBase { }
 }

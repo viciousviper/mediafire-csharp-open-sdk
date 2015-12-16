@@ -12,10 +12,12 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using MediaFireSDK;
 using MediaFireSDK.Model;
 using MediaFireSDK.Model.Errors;
+using MediaFireSDK.Multimedia;
 using WinRt.ViewModels;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -28,6 +30,7 @@ namespace WinRt
     public sealed partial class MainPage : Page
     {
         private SdkTestViewModel _viewModel;
+        private IMediaFireAgent _agent;
 
         private const string AppId = "";
         private const string AppKey = "";
@@ -64,12 +67,12 @@ namespace WinRt
                );
 #endif
 
-            var agent = new MediaFireAgent(config);
+            _agent = new MediaFireAgent(config);
 
             try
             {
-                await agent.User.Authenticate(Email, Password);
-                _viewModel = new SdkTestViewModel(agent);
+                await _agent.User.GetSessionToken(Email, Password);
+                _viewModel = new SdkTestViewModel(_agent);
                 DataContext = _viewModel;
                 _viewModel.LoadUserAndRootFilesCommand.Execute(null);
             }
@@ -83,6 +86,16 @@ namespace WinRt
         private void DownloadAndOpenFile(object sender, ItemClickEventArgs e)
         {
             _viewModel.DownloadFileCommand.Execute(e.ClickedItem);
+        }
+
+        private void LoadThumbnail(object sender, RoutedEventArgs e)
+        {
+            var img = sender as Image;
+            var file = img.DataContext as MediaFireFile;
+
+            var imgUrl = file.GetThumbnail(MediaFireSupportedImageSize.Size107X80, _agent.Image);
+
+            img.Source = new BitmapImage(new Uri(imgUrl));
         }
     }
 }

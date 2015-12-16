@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,9 +28,8 @@ namespace MediaFireSDK.Core
 
         public async Task<MediaFireUploadDetails> PollUpload(string key)
         {
-            var requestConfig = await RequestController.CreateHttpRequest(ApiUploadMethods.PollUpload);
-
-            requestConfig.Parameter(ApiParameters.Key, key);
+            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUploadMethods.PollUpload);
+            requestConfig.Parameter(MediaFireApiParameters.Key, key);
 
             var response = await RequestController.Get<UploadResponse>(requestConfig);
 
@@ -46,16 +47,18 @@ namespace MediaFireSDK.Core
         {
             var descriptor = new MediaFireUploadConfiguration();
 
-            var requestConfig = await RequestController.CreateHttpRequest(ApiUploadMethods.Simple);
+            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUploadMethods.Simple);
 
             ConfigureForSimpleUpload(requestConfig, folderKey, actionOnDuplicate, modificationTime);
 
-            descriptor.RequestUrl = requestConfig.GetConfiguredPath();
+            descriptor.Endpoint = requestConfig.GetConfiguredPath();
+            descriptor.RequestUrl = RequestController.RemoveBaseUrlFromUrl(descriptor.Endpoint);
 
             descriptor.RequestHeaders.Add(new KeyValuePair<string, string>(MediaFireApiConstants.FileNameHeader, fileName));
             descriptor.RequestHeaders.Add(new KeyValuePair<string, string>(MediaFireApiConstants.FileSizeHeader, size.ToString()));
             descriptor.RequestHeaders.Add(new KeyValuePair<string, string>(MediaFireApiConstants.ContentTypeHeader, MediaFireApiConstants.SimpleUploadContentTypeValue));
 
+            descriptor.Size = size;
             return descriptor;
         }
 
@@ -65,7 +68,7 @@ namespace MediaFireSDK.Core
             return PollUpload(uploadInfo.Key);
         }
 
-        internal static void ConfigureForSimpleUpload(
+        private void ConfigureForSimpleUpload(
             HttpRequestConfiguration requestConfig,
             string folderKey = null,
             MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep,
@@ -73,14 +76,14 @@ namespace MediaFireSDK.Core
             )
         {
             requestConfig
-                .Parameter(ApiParameters.FolderKey, folderKey)
-                .Parameter(ApiParameters.ActionOnDuplicate, actionOnDuplicate.ToApiParamenter())
-                .Parameter(ApiParameters.ModificationTime, modificationTime);
+                .Parameter(MediaFireApiParameters.FolderKey, folderKey)
+                .Parameter(MediaFireApiParameters.ActionOnDuplicate, actionOnDuplicate.ToApiParamenter())
+                .Parameter(MediaFireApiParameters.ModificationTime, modificationTime);
         }
 
         public async Task<MediaFireUploadCheckDetails> Check(string fileName, long size = 0, string deviceId = null, string hash = null, string folderKey = null)
         {
-            var requestConfig = await RequestController.CreateHttpRequest(ApiUploadMethods.Check);
+            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUploadMethods.Check);
 
             if (string.IsNullOrEmpty(fileName))
             {
@@ -88,18 +91,52 @@ namespace MediaFireSDK.Core
                     throw new MediaFireException(MediaFireErrorMessages.CheckParamsError);
 
                 requestConfig
-                    .Parameter(ApiParameters.Hash, hash)
-                    .Parameter(ApiParameters.Size, size);
+                    .Parameter(MediaFireApiParameters.Hash, hash)
+                    .Parameter(MediaFireApiParameters.Size, size);
 
             }
             else
-                requestConfig.Parameter(ApiParameters.FileName, fileName);
+                requestConfig.Parameter(MediaFireApiParameters.FileName, fileName);
 
             requestConfig
-                .Parameter(ApiParameters.DeviceId, deviceId)
-                .Parameter(ApiParameters.FolderKey, folderKey);
+                .Parameter(MediaFireApiParameters.DeviceId, deviceId)
+                .Parameter(MediaFireApiParameters.FolderKey, folderKey);
 
             return await RequestController.Get<MediaFireUploadCheckDetails>(requestConfig);
+        }
+
+        public async Task<MediaFireUploadDetails> Simple(MediaFireUploadConfiguration uploadConfiguration, Stream content, IProgress<MediaFireOperationProgress> progress = null,
+            CancellationToken? tokenParam = null)
+        {
+            var token = tokenParam ?? CancellationToken.None;
+
+            if (progress == null)
+                progress = new Progress<MediaFireOperationProgress>();
+
+            var requestConfig = await RequestController.CreateHttpRequestForFullPath(uploadConfiguration.Endpoint, isChunkedOperation: true);
+
+            requestConfig
+                .Content(content, true)
+                .WithProgress(progress, new MediaFireOperationProgress { TotalSize = uploadConfiguration.Size }, token);
+
+            foreach (var headers in uploadConfiguration.RequestHeaders)
+            {
+                requestConfig.ContentHeader(headers.Key, headers.Value);
+            }
+
+
+
+            var res = await RequestController.Post<UploadResponse>(requestConfig);
+
+            if (res.DoUpload.IsSuccess == false)
+                throw new MediaFireException(string.Format(MediaFireErrorMessages.UploadErrorFormat, res.DoUpload.Result));
+
+
+            var uploadInfo = await PollUpload(res.DoUpload.Key);
+
+            uploadInfo.Key = res.DoUpload.Key;
+
+            return uploadInfo;
         }
     }
 }
