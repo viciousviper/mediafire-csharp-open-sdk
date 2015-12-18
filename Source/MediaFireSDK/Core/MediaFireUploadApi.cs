@@ -81,26 +81,29 @@ namespace MediaFireSDK.Core
                 .Parameter(MediaFireApiParameters.ModificationTime, modificationTime);
         }
 
-        public async Task<MediaFireUploadCheckDetails> Check(string fileName, long size = 0, string deviceId = null, string hash = null, string folderKey = null)
+        public async Task<MediaFireUploadCheckDetails> Check(string fileName, long size = 0, string deviceId = null, string hash = null, string folderKey = null, bool resumable = false)
         {
             var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUploadMethods.Check);
 
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName) && (size == 0 || string.IsNullOrEmpty(hash)))
             {
-                if (size == 0 && string.IsNullOrEmpty(hash))
-                    throw new MediaFireException(MediaFireErrorMessages.CheckParamsError);
-
-                requestConfig
-                    .Parameter(MediaFireApiParameters.Hash, hash)
-                    .Parameter(MediaFireApiParameters.Size, size);
-
+                throw new MediaFireException(MediaFireErrorMessages.CheckParamsError);
             }
             else
                 requestConfig.Parameter(MediaFireApiParameters.FileName, fileName);
 
+            if (string.IsNullOrEmpty(hash) == false)
+            {
+                requestConfig.Parameter(MediaFireApiParameters.Hash, hash);
+            }
+
+            if(size != 0)
+                requestConfig.Parameter(MediaFireApiParameters.Size, size);
+
             requestConfig
                 .Parameter(MediaFireApiParameters.DeviceId, deviceId)
-                .Parameter(MediaFireApiParameters.FolderKey, folderKey);
+                .Parameter(MediaFireApiParameters.FolderKey, folderKey)
+                .Parameter(MediaFireApiParameters.Resumable, resumable.ToMediaFireYesNo());
 
             return await RequestController.Get<MediaFireUploadCheckDetails>(requestConfig);
         }

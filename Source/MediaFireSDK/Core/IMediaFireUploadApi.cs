@@ -48,13 +48,15 @@ namespace MediaFireSDK.Core
         /// <param name="deviceId">An integer specifying on which user device to look for data.</param>
         /// <param name="hash">The SHA256 hash of the file being uploaded</param>
         /// <param name="folderKey">The destination folder to store the file. If it's not passed, then the file will be stored in the root folder.</param>
+        /// <param name="resumable">Specifies whether to make this upload resumable or not.</param>
         /// <returns></returns>
         Task<MediaFireUploadCheckDetails> Check(
             string fileName,
             long size = 0,
             string deviceId = null,
             string hash = null,
-            string folderKey = null
+            string folderKey = null,
+            bool resumable = false
             );
 
         /// <summary>
@@ -66,9 +68,9 @@ namespace MediaFireSDK.Core
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns></returns>
         Task<MediaFireUploadDetails> Simple(
-            MediaFireUploadConfiguration uploadConfiguration, 
-            Stream content, 
-            IProgress<MediaFireOperationProgress> progress = null, 
+            MediaFireUploadConfiguration uploadConfiguration,
+            Stream content,
+            IProgress<MediaFireOperationProgress> progress = null,
             CancellationToken? token = null
             );
 

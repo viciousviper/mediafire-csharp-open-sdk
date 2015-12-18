@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediaFireSDK.Model.Responses;
 using Newtonsoft.Json;
 
 namespace MediaFireSDK.Model
@@ -17,15 +18,14 @@ namespace MediaFireSDK.Model
         public string QuickKey { get; set; }
         public string Hash { get; set; }
         public string FileName { get; set; }
-        public string Size { get; set; }
-        public string Created { get; set; }
+        public long Size { get; set; }
+        public DateTime Created { get; set; }
         public string Revision { get; set; }
 
         public bool IsComplete { get { return Status == MediaFireUploadStatus.NoMoreRequestsForThisKey; } }
         public bool IsSuccess { get { return Result == MediaFireUploadResult.Success; } }
 
-        [JsonProperty("resumable_upload")]
-        public string ResumableUpload { get; set; }
+       
 
         [JsonProperty("created_utc")]
         public string CreatedUtc { get; set; }

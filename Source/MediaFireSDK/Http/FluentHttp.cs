@@ -35,6 +35,8 @@ namespace MediaFireSDK.Http
             Path = path;
             _ignoreEmptyValues = ignoreEmptyValues;
             Token = CancellationToken.None;
+            ProgressOperation = new Progress<MediaFireOperationProgress>();
+            ProgressData = new MediaFireOperationProgress();
         }
 
         public HttpRequestConfiguration Parameter(string name, object value)

@@ -63,5 +63,17 @@ namespace MediaFireSDK
         /// </example>
         Task<T> PostAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true) where T : MediaFireResponseBase;
 
+        /// <summary>
+        /// Performs a Http Post to the MediaFire API, of a file.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path">The api method path (e.g file/get_info.php)</param>
+        /// <param name="content">The file or chunk stream</param>
+        /// <param name="parameters">A dictionary containing all required parameters.</param>
+        /// <param name="headers">A dictionary containing all required headers.</param>
+        /// <param name="attachSessionToken">Lets the SDK know if it is required to authenticate the request.</param>
+        /// <returns>A deserialized response of type T</returns>
+        Task<T> PostStreamAsync<T>(string path, Stream content, IDictionary<string, object> parameters, IDictionary<string, string> headers, bool attachSessionToken = true ) where T : MediaFireResponseBase;
+
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Core;
 using MediaFireSDK.Http;
@@ -42,6 +44,21 @@ namespace MediaFireSDK
         public async Task<T> PostAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true) where T : MediaFireResponseBase
         {
             var req = await ConfigureRequest(path, parameters, attachSessionToken);
+            return await _requestController.Post<T>(req);
+        }
+
+        public async Task<T> PostStreamAsync<T>(string path, Stream content, IDictionary<string, object> parameters, IDictionary<string, string> headers,
+            bool attachSessionToken = true) where T : MediaFireResponseBase
+        {
+            var req = await _requestController.CreateHttpRequest(path, attachSessionToken, isChunkedOperation: true);
+            req.Content(content, true);
+
+            foreach (var header in headers)
+            {
+                req.ContentHeader(header.Key, header.Value);
+            }
+
+
             return await _requestController.Post<T>(req);
         }
 

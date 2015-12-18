@@ -25,5 +25,8 @@ namespace MediaFireSDK.Model
         internal string StorageLimitExceeded { get; set; }
 
         public bool IsStorageLimitExceeded { get { return StorageLimitExceeded.FromMediaFireYesNo(); } }
+
+        [JsonProperty("resumable_upload")]
+        public ResumableUploadDetails ResumableUpload { get; set; }
     }
 }
