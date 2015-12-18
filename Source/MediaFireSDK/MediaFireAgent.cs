@@ -47,9 +47,22 @@ namespace MediaFireSDK
             return await _requestController.Post<T>(req);
         }
 
-        public async Task<T> PostStreamAsync<T>(string path, Stream content, IDictionary<string, object> parameters, IDictionary<string, string> headers,
-            bool attachSessionToken = true) where T : MediaFireResponseBase
+        public async Task<T> PostStreamAsync<T>(
+            string path,
+            Stream content,
+            IDictionary<string, object> parameters,
+            IDictionary<string, string> headers,
+            bool attachSessionToken = true,
+            CancellationToken? token = null,
+            IProgress<MediaFireOperationProgress> progress = null
+
+            ) where T : MediaFireResponseBase
         {
+
+            token = token ?? CancellationToken.None;
+            progress = progress ?? new Progress<MediaFireOperationProgress>();
+            var mfProgressData = new MediaFireOperationProgress();
+
             var req = await _requestController.CreateHttpRequest(path, attachSessionToken, isChunkedOperation: true);
             req.Content(content, true);
 
@@ -58,6 +71,21 @@ namespace MediaFireSDK
                 req.ContentHeader(header.Key, header.Value);
             }
 
+            if (content.CanSeek)
+            {
+                mfProgressData.TotalSize = content.Length;
+            }
+            else
+            {
+                if (headers.ContainsKey(MediaFireApiConstants.FileSizeHeader))
+                    mfProgressData.TotalSize = long.Parse(headers[MediaFireApiConstants.FileSizeHeader]);
+
+                if (headers.ContainsKey(MediaFireApiConstants.UnitSizeHeader))
+                    mfProgressData.TotalSize = long.Parse(headers[MediaFireApiConstants.UnitSizeHeader]);
+            }
+
+
+            req.WithProgress(progress, mfProgressData, token.Value);
 
             return await _requestController.Post<T>(req);
         }
