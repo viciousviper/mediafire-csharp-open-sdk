@@ -36,6 +36,7 @@ namespace ResumableUpload
                 Console.WriteLine("##############  Uploading unit {0}  ##############", i);
                 uploadInfo = await UploadUnit(i, resumableUpload);
 
+                Console.WriteLine("\n\n");
 
             }
 
@@ -103,7 +104,11 @@ namespace ResumableUpload
 
 
 
-            return (await _agent.PostStreamAsync<UploadResponse>(MediaFireApiUploadMethods.Resumable, contentToUpload, parameters, headers));
+            return (await _agent.PostStreamAsync<UploadResponse>(MediaFireApiUploadMethods.Resumable, contentToUpload, parameters, headers, progress:new Progress<MediaFireOperationProgress>(
+                (s) =>
+                {
+                    Console.Write(".");
+                })));
 
 
         }
