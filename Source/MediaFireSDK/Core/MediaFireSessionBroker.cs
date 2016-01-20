@@ -12,7 +12,7 @@ using MediaFireSDK.Services;
 
 namespace MediaFireSDK.Core
 {
-    internal class MediaFireSessionBroker
+    internal class MediaFireSessionBroker : IDisposable
     {
         private readonly ICryptoService _cryptoService;
         private readonly MediaFireApiConfiguration _configuration;
@@ -231,5 +231,9 @@ namespace MediaFireSDK.Core
         }
 
 
+        public void Dispose()
+        {
+            _periodicTokenSource.Cancel();
+        }
     }
 }

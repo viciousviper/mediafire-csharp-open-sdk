@@ -107,5 +107,13 @@ namespace MediaFireSDK
             return requestConfig;
         }
 
+        public void Dispose()
+        {
+            _requestController.SessionBroker.Dispose();
+            User = null;
+            Image = null;
+            Upload = null;
+
+        }
     }
 }
