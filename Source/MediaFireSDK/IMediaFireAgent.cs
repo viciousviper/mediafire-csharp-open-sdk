@@ -16,7 +16,7 @@ namespace MediaFireSDK
     /// <summary>
     /// The mediafire API agent.
     /// </summary>
-    public interface IMediaFireAgent
+    public interface IMediaFireAgent : IDisposable
     {
         /// <summary>
         /// The configuration passed to the agent in the instantiation phasse.
