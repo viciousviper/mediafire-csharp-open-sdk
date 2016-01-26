@@ -103,12 +103,14 @@
     <Content Include="Assets\WideLogo.scale-240.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\MediaFireSDK\MediaFireSDK.csproj">
-      <Project>{70c8fead-150f-4cb6-aadf-91f2b4613f9f}</Project>
-      <Name>MediaFireSDK</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <Reference Include="crypto, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Portable.BouncyCastle.1.7.0.2\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10\crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MediaFireSDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MediaFireSDK.1.0.0.0\lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\MediaFireSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
