@@ -95,7 +95,7 @@ The class [MediaFireConstants](https://github.com/MediaFire/mediafire-csharp-ope
 Stream fileStream = null; // The file stream to upload.
 string fileName = "[Target_File_Name]";
 
-var uploadDetails = await agent.File.Upload(
+var uploadDetails = await agent.Upload.Simple(
 						  fileStream,
 						  fileName,
 						  size: 0, // The SDK automatically gets the size of the fileStream 
