@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRt.Windows", "WinRt\WinR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRt.WindowsPhone", "WinRt\WinRt.WindowsPhone\WinRt.WindowsPhone.csproj", "{E29BA7B9-C587-42F2-92BC-6A311C3CA92B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFireSDK", "..\MediaFireSDK\MediaFireSDK.csproj", "{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5316C057-BAC5-4BDA-BA2F-F0BD7113C00A}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -95,16 +93,6 @@ Global
 		{E29BA7B9-C587-42F2-92BC-6A311C3CA92B}.Release|x86.ActiveCfg = Release|x86
 		{E29BA7B9-C587-42F2-92BC-6A311C3CA92B}.Release|x86.Build.0 = Release|x86
 		{E29BA7B9-C587-42F2-92BC-6A311C3CA92B}.Release|x86.Deploy.0 = Release|x86
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Release|ARM.ActiveCfg = Release|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Release|x64.ActiveCfg = Release|Any CPU
-		{70C8FEAD-150F-4CB6-AADF-91F2B4613F9F}.Release|x86.ActiveCfg = Release|Any CPU
 		{B72AED1F-BA8C-411E-AF18-F49113C079DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B72AED1F-BA8C-411E-AF18-F49113C079DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B72AED1F-BA8C-411E-AF18-F49113C079DE}.Debug|ARM.ActiveCfg = Debug|Any CPU
