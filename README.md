@@ -159,24 +159,6 @@ public async Task Download(string quickKey, Stream destination, CancellationToke
 	}
 }
 
-public async Task<MediaFireLinkCollection> GetLinks(string quickKey, MediaFireLinkType linkType = MediaFireLinkType.All)
-{
-	var res = await agent.GetAsync<MediaFireGetLinksResponse>(MediaFireApiFileMethods.GetLinks, new Dictionary<string, object>
-	{
-		{MediaFireApiParameters.QuickKey, quickKey},
-		{MediaFireApiParameters.LinkType, linkType.ToApiParameter()},
-	});
-
-	var col = new MediaFireLinkCollection(res.Links)
-	{
-		DirectDownloadFreeBandwidth = res.DirectDownloadFreeBandwidth,
-		OneTimeDownloadRequestCount = res.OneTimeDownloadRequestCount,
-		OneTimeKeyRequestCount = res.OneTimeKeyRequestCount,
-		OneTimeKeyRequestMaxCount = res.OneTimeKeyRequestMaxCount
-	};
-
-	return col;
-}
 ```
 
 
