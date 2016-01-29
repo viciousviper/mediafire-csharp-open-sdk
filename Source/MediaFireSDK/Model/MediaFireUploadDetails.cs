@@ -22,7 +22,7 @@ namespace MediaFireSDK.Model
         [JsonProperty("size")]
         internal long? SizeContainer { get; set; }
         public long Size { get { return SizeContainer ?? 0; } }
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
         public string Revision { get; set; }
 
         public bool IsComplete { get { return Status == MediaFireUploadStatus.NoMoreRequestsForThisKey; } }
