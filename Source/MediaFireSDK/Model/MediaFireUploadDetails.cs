@@ -18,14 +18,17 @@ namespace MediaFireSDK.Model
         public string QuickKey { get; set; }
         public string Hash { get; set; }
         public string FileName { get; set; }
-        public long Size { get; set; }
+
+        [JsonProperty("size")]
+        internal long? SizeContainer { get; set; }
+        public long Size { get { return SizeContainer ?? 0; } }
         public DateTime Created { get; set; }
         public string Revision { get; set; }
 
         public bool IsComplete { get { return Status == MediaFireUploadStatus.NoMoreRequestsForThisKey; } }
         public bool IsSuccess { get { return Result == MediaFireUploadResult.Success; } }
 
-       
+
 
         [JsonProperty("created_utc")]
         public string CreatedUtc { get; set; }
