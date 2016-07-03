@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Core;
@@ -20,6 +18,9 @@ namespace MediaFireSDK
 
         public MediaFireAgent(MediaFireApiConfiguration configuration)
         {
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+
             Configuration = configuration;
             _requestController = new MediaFireRequestController(configuration);
             var cryptoService = new BouncyCastleCryptoService();
@@ -28,42 +29,37 @@ namespace MediaFireSDK
             Upload = new MediaFireUploadApi(_requestController);
         }
 
-        public MediaFireApiConfiguration Configuration { get; private set; }
+        public MediaFireApiConfiguration Configuration { get; }
+
         public IMediaFireUserApi User { get; private set; }
+
         public IMediaFireImageApi Image { get; private set; }
+
         public IMediaFireUploadApi Upload { get; private set; }
 
-
-        public async Task<T> GetAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true) where T : MediaFireResponseBase
+        public async Task<T> GetAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true)
+            where T : MediaFireResponseBase
         {
             var req = await ConfigureRequest(path, parameters, attachSessionToken);
             return await _requestController.Get<T>(req);
         }
 
-
-        public async Task<T> PostAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true) where T : MediaFireResponseBase
+        public async Task<T> PostAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true)
+            where T : MediaFireResponseBase
         {
             var req = await ConfigureRequest(path, parameters, attachSessionToken);
             return await _requestController.Post<T>(req);
         }
 
-        public async Task<T> PostStreamAsync<T>(
-            string path,
-            Stream content,
-            IDictionary<string, object> parameters,
-            IDictionary<string, string> headers,
-            bool attachSessionToken = true,
-            CancellationToken? token = null,
-            IProgress<MediaFireOperationProgress> progress = null
-
-            ) where T : MediaFireResponseBase
+        public async Task<T> PostStreamAsync<T>(string path, Stream content, IDictionary<string, object> parameters, IDictionary<string, string> headers,
+                                                bool attachSessionToken = true, CancellationToken? token = null, IProgress<MediaFireOperationProgress> progress = null)
+            where T : MediaFireResponseBase
         {
-
             token = token ?? CancellationToken.None;
             progress = progress ?? new Progress<MediaFireOperationProgress>();
             var mfProgressData = new MediaFireOperationProgress();
 
-            var req = await _requestController.CreateHttpRequest(path, attachSessionToken, isChunkedOperation: true);
+            var req = await _requestController.CreateHttpRequest(path, authenticate: attachSessionToken, isChunkedOperation: true);
             req.Content(content, true);
 
             foreach (var header in headers)
@@ -84,7 +80,6 @@ namespace MediaFireSDK
                     mfProgressData.TotalSize = long.Parse(headers[MediaFireApiConstants.UnitSizeHeader]);
             }
 
-
             req.WithProgress(progress, mfProgressData, token.Value);
 
             return await _requestController.Post<T>(req);
@@ -92,17 +87,7 @@ namespace MediaFireSDK
 
         private async Task<HttpRequestConfiguration> ConfigureRequest(string path, IDictionary<string, object> parameters, bool attachSessionToken)
         {
-
-
-            var requestConfig = await _requestController.CreateHttpRequest(path, attachSessionToken);
-            if (parameters != null)
-            {
-
-                foreach (var parameter in parameters)
-                {
-                    requestConfig.Parameter(parameter.Key, parameter.Value);
-                }
-            }
+            var requestConfig = await _requestController.CreateHttpRequest(path, parameters, attachSessionToken);
 
             return requestConfig;
         }
@@ -113,7 +98,6 @@ namespace MediaFireSDK
             User = null;
             Image = null;
             Upload = null;
-
         }
     }
 }

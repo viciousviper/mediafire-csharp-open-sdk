@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace MediaFireSDK.Model.Responses
@@ -11,17 +7,18 @@ namespace MediaFireSDK.Model.Responses
     {
         [JsonProperty("session_token")]
         public string SessionToken { get; set; }
-    }
 
+        [JsonProperty("secret_key")]
+        public string SecretKey { get; set; }
+
+        public string Time { get; set; }
+    }
 
     public class MediaFireGetUserInfoResponse : MediaFireResponseBase
     {
         [JsonProperty("user_info")]
         public MediaFireUserDetails UserDetails { get; set; }
     }
-
-
-
 
     internal class FetchTosResponse : MediaFireResponseBase
     {
@@ -38,5 +35,4 @@ namespace MediaFireSDK.Model.Responses
         [JsonProperty("created_utc")]
         public DateTime CreatedUtc { get; set; }
     }
-
 }

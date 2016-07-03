@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Http;
 using MediaFireSDK.Model;
 using MediaFireSDK.Model.Errors;
 using MediaFireSDK.Model.Responses;
-using Newtonsoft.Json;
 
 namespace MediaFireSDK.Core
 {
-    class MediaFireUploadApi : MediaFireApiBase, IMediaFireUploadApi
+    internal class MediaFireUploadApi : MediaFireApiBase, IMediaFireUploadApi
     {
         public MediaFireUploadApi(MediaFireRequestController requestController)
             : base(requestController)
@@ -37,17 +33,11 @@ namespace MediaFireSDK.Core
             return response.DoUpload;
         }
 
-
-        public async Task<MediaFireUploadConfiguration> GetUploadConfiguration(
-            string fileName,
-            long size,
-            string folderKey = null,
-            MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep,
-            DateTime? modificationTime = null)
+        public async Task<MediaFireUploadConfiguration> GetUploadConfiguration(string fileName, long size, string folderKey = null, MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep, DateTime? modificationTime = null)
         {
             var descriptor = new MediaFireUploadConfiguration();
 
-            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUploadMethods.Simple);
+            var requestConfig = await RequestController.CreateHttpRequest(MediaFireApiUploadMethods.Simple, authenticate: false);
 
             ConfigureForSimpleUpload(requestConfig, folderKey, actionOnDuplicate, modificationTime);
 
@@ -68,12 +58,7 @@ namespace MediaFireSDK.Core
             return PollUpload(uploadInfo.Key);
         }
 
-        private void ConfigureForSimpleUpload(
-            HttpRequestConfiguration requestConfig,
-            string folderKey = null,
-            MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep,
-            DateTime? modificationTime = null
-            )
+        private void ConfigureForSimpleUpload(HttpRequestConfiguration requestConfig, string folderKey = null, MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep, DateTime? modificationTime = null)
         {
             requestConfig
                 .Parameter(MediaFireApiParameters.FolderKey, folderKey)
@@ -92,12 +77,12 @@ namespace MediaFireSDK.Core
             else
                 requestConfig.Parameter(MediaFireApiParameters.FileName, fileName);
 
-            if (string.IsNullOrEmpty(hash) == false)
+            if (!string.IsNullOrEmpty(hash))
             {
                 requestConfig.Parameter(MediaFireApiParameters.Hash, hash);
             }
 
-            if(size != 0)
+            if (size != 0)
                 requestConfig.Parameter(MediaFireApiParameters.Size, size);
 
             requestConfig
@@ -127,13 +112,10 @@ namespace MediaFireSDK.Core
                 requestConfig.ContentHeader(headers.Key, headers.Value);
             }
 
-
-
             var res = await RequestController.Post<UploadResponse>(requestConfig);
 
-            if (res.DoUpload.IsSuccess == false)
+            if (!res.DoUpload.IsSuccess)
                 throw new MediaFireException(string.Format(MediaFireErrorMessages.UploadErrorFormat, res.DoUpload.Result));
-
 
             var uploadInfo = await PollUpload(res.DoUpload.Key);
 

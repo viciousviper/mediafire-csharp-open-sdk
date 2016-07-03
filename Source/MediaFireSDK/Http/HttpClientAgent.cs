@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Http.Error;
 using MediaFireSDK.Model;
-using Newtonsoft.Json;
 
 namespace MediaFireSDK.Http
 {
@@ -21,12 +17,7 @@ namespace MediaFireSDK.Http
         private readonly int _bufferSize;
         private readonly CancellationToken _token;
 
-        public UploadWithProgressHttpContent(
-            IProgress<MediaFireOperationProgress> progress,
-            MediaFireOperationProgress data,
-            Stream file,
-            int bufferSize,
-            CancellationToken token)
+        public UploadWithProgressHttpContent(IProgress<MediaFireOperationProgress> progress, MediaFireOperationProgress data, Stream file, int bufferSize, CancellationToken token)
         {
             _progress = progress;
             _data = data;
@@ -34,8 +25,6 @@ namespace MediaFireSDK.Http
             _bufferSize = bufferSize;
             _token = token;
         }
-
-
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
@@ -61,12 +50,9 @@ namespace MediaFireSDK.Http
             _useHttpV1 = useHttpV1;
         }
 
-
         public async override Task<T> SendAsync<T>(HttpMethod method)
         {
-
             var handler = new HttpClientHandler();
-
 
             var cli = new HttpClient(handler);
 
@@ -82,7 +68,6 @@ namespace MediaFireSDK.Http
                 content = new UploadWithProgressHttpContent(ProgressOperation, ProgressData, Stream, _chunkBufferSize, Token);
             }
 
-
             if ((Parameters.Count != 0) && (content != null || method != HttpMethod.Post))
                 Path = MediaFireHttpHelpers.BuildQueryString(Parameters, Path);
             else
@@ -95,8 +80,6 @@ namespace MediaFireSDK.Http
                 content = parameters;
             }
 
-
-
             var req = new HttpRequestMessage(method, Path) { Content = content };
 
             if (content != null)
@@ -107,7 +90,6 @@ namespace MediaFireSDK.Http
                 }
 
                 req.Content = content;
-
             }
 
             //
@@ -115,7 +97,6 @@ namespace MediaFireSDK.Http
             //
             if (IsUpload && _useHttpV1)
                 req.Version = new Version(1, 0);
-
 
             var completionOption = HttpCompletionOption.ResponseContentRead;
 
@@ -128,7 +109,6 @@ namespace MediaFireSDK.Http
             {
                 await DownloadToStream(resp);
                 return default(T);
-
             }
 
             return await DeserializeObject<T>(resp);
@@ -158,10 +138,7 @@ namespace MediaFireSDK.Http
                 throw new HttpRequestExtendedException(resp, e, resultString);
             }
 
-
             return DeserializeJson<T>(resultString);
         }
-
-       
     }
 }

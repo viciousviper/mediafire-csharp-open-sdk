@@ -1,6 +1,5 @@
 ﻿namespace MediaFireSDK
 {
-
     /// Core Api Contants
     public static class MediaFireApiConstants
     {
@@ -21,14 +20,12 @@
         public const string LinkTypeWatch = "watch";
         public const string LinkTypeStreaming = "streaming";
 
-
         public const string MediaFireFile = "file";
         public const string MediaFireFolder = "folder";
 
         public const string ContentTypeHeader = "Content-Type";
         public const string SimpleUploadContentTypeValue = "application/octet-stream";
         public const string ResumableUploadContentTypeValue = SimpleUploadContentTypeValue;
-
 
         public const string FileNameHeader = "x-filename";
         public const string FileSizeHeader = "x-filesize";
@@ -37,8 +34,6 @@
         public const string UnitIdHeader = "x-unit-id";
         public const string UnitSizeHeader = "x-unit-size";
         public const string UnitHashHeader = "x-unit-hash";
-
-
 
         public const string UserAcceptedTermsValue = MediaFireYes;
 
@@ -49,9 +44,9 @@
         public const string PrivatePrivacy = "private";
     }
 
-    /// 
+    ///
     /// Api Methods contants.
-    /// 
+    ///
 
     public static class MediaFireApiBillingMethods
     {
@@ -62,7 +57,6 @@
         public const string GetPlans = BillingMethodsPath + "get_plans.php";
         public const string GetProducts = BillingMethodsPath + "get_products.php";
         public const string PurchasePlan = BillingMethodsPath + "purchase_plan.php";
-
     }
 
     public static class MediaFireApiContactMethods
@@ -79,7 +73,6 @@
 
     public static class MediaFireApiDeviceMethods
     {
-
         public const string DeviceMethodsPath = "device/";
         public const string AddDevice = DeviceMethodsPath + "add_device.php";
         public const string EmptyTrash = DeviceMethodsPath + "empty_trash.php";
@@ -102,7 +95,6 @@
 
     public static class MediaFireApiFileMethods
     {
-
         public const string FileMethodsPath = "file/";
         public const string ConfigureOneTimeKey = FileMethodsPath + "configure_one_time_key.php";
         public const string Copy = FileMethodsPath + "copy.php";
@@ -122,10 +114,8 @@
         public const string Zip = FileMethodsPath + "zip.php";
     }
 
-
     public static class MediaFireApiFolderMethods
     {
-
         public const string FolderMethodsPath = "folder/";
         public const string ConfigureFiledrop = FolderMethodsPath + "configure_filedrop.php";
         public const string Copy = FolderMethodsPath + "copy.php";
@@ -143,14 +133,12 @@
 
     public static class MediaFireApiNotificationsMethods
     {
-
         public const string NotificationsMethodsPath = "notifications/";
         public const string GetCache = NotificationsMethodsPath + "get_cache.php";
         public const string PeekCache = NotificationsMethodsPath + "peek_cache.php";
         public const string SendMessage = NotificationsMethodsPath + "send_message.php";
         public const string SendNotification = NotificationsMethodsPath + "send_notification.php";
     }
-
 
     public static class MediaFireApiSystemMethods
     {
@@ -197,21 +185,14 @@
         public const string SetAvatar = UserMethodsPath + "set_avatar.php";
         public const string SetSettings = UserMethodsPath + "set_settings.php";
         public const string Update = UserMethodsPath + "update.php";
-
     }
-
-
-
-
-
-
-
 
     public static class MediaFireApiParameters
     {
         public const string Signature = "signature";
         public const string ResponseFormat = "response_format";
         public const string SessionToken = "session_token";
+        public const string TokenVersion = "token_version";
         public const string AppId = "application_id";
         public const string Password = "password";
         public const string Email = "email";
@@ -220,7 +201,7 @@
         public const string Description = "description";
         public const string Truncate = "truncate";
         public const string ParentKey = "parent_key";
-        public const string ActionOnDuplicate = "action_on_duplicate ";
+        public const string ActionOnDuplicate = "action_on_duplicate";
         public const string Key = "key";
         public const string ContentType = "content_type";
         public const string ContentTypeFileType = "files";
@@ -229,7 +210,9 @@
         public const string FolderKey = "folder_key";
         public const string FolderKeySource = "folder_key_src";
         public const string FolderKeyDestination = "folder_key_dst";
+        public const string FolderPath = "folder_path";
         public const string QuickKey = "quick_key";
+        public const string FilePath = "file_path";
         public const string SearchText = "search_text";
         public const string FirstName = "first_name";
         public const string LastName = "last_name";
@@ -245,7 +228,6 @@
         public const string ChunkSize = "chunk_size";
         public const string Details = "details";
         public const string LinkType = "link_type";
-
 
         public const string ModificationTime = "mtime";
         public const string Privacy = "privacy";
@@ -441,6 +423,5 @@
         public const int UnkownList = 255;
         public const int InvalidImportService = 256;
         public const int CardReuseForbidden = 257;
-
     }
 }

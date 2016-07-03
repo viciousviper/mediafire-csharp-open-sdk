@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediaFireSDK.Model;
 
 namespace MediaFireSDK
@@ -24,7 +20,7 @@ namespace MediaFireSDK
         /// <param name="value">yes or no strings</param>
         public static string ToMediaFireYesNo(this bool? value)
         {
-            return value == null ? String.Empty : value.Value.ToMediaFireYesNo();
+            return value == null ? string.Empty : value.Value.ToMediaFireYesNo();
         }
 
         /// <summary>
@@ -65,32 +61,40 @@ namespace MediaFireSDK
         /// <param name="linkType">The parameter to be converted.</param>
         public static string ToApiParameter(this MediaFireLinkType linkType)
         {
-            var type = String.Empty;
+            var type = string.Empty;
             switch (linkType)
             {
                 case MediaFireLinkType.DirectDownload:
                     type = MediaFireApiConstants.LinkTypeDirectDownload;
                     break;
+
                 case MediaFireLinkType.Edit:
                     type = MediaFireApiConstants.LinkTypeEdit;
                     break;
+
                 case MediaFireLinkType.Listen:
                     type = MediaFireApiConstants.LinkTypeListen;
                     break;
+
                 case MediaFireLinkType.NormalDownload:
                     type = MediaFireApiConstants.LinkTypeNormalDownload;
                     break;
+
                 case MediaFireLinkType.OneTimeDownload:
                     type = MediaFireApiConstants.LinkTypeOneTimeDownload;
                     break;
+
                 case MediaFireLinkType.Streaming:
                     type = MediaFireApiConstants.LinkTypeStreaming;
                     break;
+
                 case MediaFireLinkType.View:
                     type = MediaFireApiConstants.LinkTypeView;
                     break;
+
                 case MediaFireLinkType.All:
                     break;
+
                 default:
                     throw new InvalidOperationException();
             }
@@ -105,7 +109,6 @@ namespace MediaFireSDK
                 : MediaFireApiParameters.ContentTypeFolderType;
         }
 
-        
         public static string ToApiParameter(this MediaFireContentFilter[] filters)
         {
             if (filters == null || filters.Length == 0)
@@ -123,6 +126,5 @@ namespace MediaFireSDK
         {
             return query.ToString().ToLower();
         }
-
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Http;
@@ -20,20 +17,17 @@ namespace MediaFireSDK.Core
         private readonly string _password;
         private readonly MediaFireRequestController _requestController;
 
-
         internal string CurrentSessionToken { get; private set; }
+        private long? _secretKey;
+        private string _time;
 
         private Task _renewalTask;
         private Task _periodicRenewalTask;
         private CancellationTokenSource _periodicTokenSource;
 
-        public MediaFireSessionBroker(
-            ICryptoService cryptoService,
-           MediaFireApiConfiguration configuration,
-            string email,
-            string password,
-            MediaFireRequestController requestController
-            )
+        internal event EventHandler AuthenticationContextChanged;
+
+        public MediaFireSessionBroker(ICryptoService cryptoService, MediaFireApiConfiguration configuration, string email, string password, MediaFireRequestController requestController)
         {
             _cryptoService = cryptoService;
             _configuration = configuration;
@@ -42,11 +36,31 @@ namespace MediaFireSDK.Core
             _requestController = requestController;
         }
 
-
-        public async Task<string> GetSessionToken()
+        public MediaFireSessionBroker(ICryptoService cryptoService, MediaFireApiConfiguration configuration, AuthenticationContext authenticationContext, MediaFireRequestController requestController)
         {
-            var token = await GetSessionTokenInternal();
-            LaunchPeriodicRenewal();
+            _cryptoService = cryptoService;
+            _configuration = configuration;
+            CurrentSessionToken = authenticationContext.SessionToken;
+            _secretKey = authenticationContext.SecretKey;
+            _time = authenticationContext.Time;
+            _requestController = requestController;
+        }
+
+        public AuthenticationContext GetAuthenticationContext()
+        {
+            if (!_secretKey.HasValue)
+                throw new InvalidOperationException("Authentication context has not been initialized");
+
+            return new AuthenticationContext(CurrentSessionToken, _secretKey.Value, _time);
+        }
+
+        public async Task<string> GetSessionToken(TokenVersion tokenVersion)
+        {
+            var token = await GetSessionTokenInternal(tokenVersion);
+
+            if (tokenVersion == TokenVersion.V1)
+                LaunchPeriodicRenewal();
+
             return token;
         }
 
@@ -54,7 +68,9 @@ namespace MediaFireSDK.Core
         {
             await WaitForRenewal();
 
-            request.AddOrReplaceParameter(MediaFireApiParameters.SessionToken, CurrentSessionToken);
+            request
+                .AddOrReplaceParameter(MediaFireApiParameters.SessionToken, CurrentSessionToken)
+                .Parameter(MediaFireApiParameters.Signature, GetMediaFireCallSignature);
         }
 
         public async Task RetrieveNewSessionToken()
@@ -69,7 +85,7 @@ namespace MediaFireSDK.Core
 
             try
             {
-                await GetSessionTokenInternal();
+                await GetSessionTokenInternal(TokenVersion.V1);
                 tcs.SetResult(true);
             }
             catch (Exception e)
@@ -81,18 +97,17 @@ namespace MediaFireSDK.Core
             {
                 _renewalTask = null;
             }
-
         }
 
-        private async Task<string> GetSessionTokenInternal()
+        private async Task<string> GetSessionTokenInternal(TokenVersion tokenVersion)
         {
             var httpRequest = await _requestController.CreateHttpRequest(MediaFireApiUserMethods.GetSessionToken, authenticate: false);
 
             httpRequest
                 .Parameter(MediaFireApiParameters.Email, _email)
                 .Parameter(MediaFireApiParameters.Password, _password)
-                .Parameter(MediaFireApiParameters.Signature, GetMediaFireSignature(_email, _password));
-
+                .Parameter(MediaFireApiParameters.Signature, GetMediaFireSignature(_email, _password))
+                .Parameter(MediaFireApiParameters.TokenVersion, tokenVersion == TokenVersion.V2 ? 2 : (int?)null);
 
             return await RetrieveSessionToken(httpRequest);
         }
@@ -101,7 +116,8 @@ namespace MediaFireSDK.Core
         {
             var httpRequest = await _requestController.CreateHttpRequest(MediaFireApiUserMethods.RenewSessionToken, authenticate: false);
             httpRequest
-                .Parameter(MediaFireApiParameters.SessionToken, CurrentSessionToken);
+                .Parameter(MediaFireApiParameters.SessionToken, CurrentSessionToken)
+                .Parameter(MediaFireApiParameters.Signature, GetMediaFireCallSignature);
 
             return await RetrieveSessionToken(httpRequest);
         }
@@ -109,14 +125,14 @@ namespace MediaFireSDK.Core
         private async Task<string> RetrieveSessionToken(HttpRequestConfiguration httpRequest)
         {
             var response = await _requestController.Post<SessionTokenResponse>(httpRequest);
-            CurrentSessionToken = response.SessionToken;
-            return response.SessionToken;
+            _secretKey = !string.IsNullOrEmpty(response.SecretKey) ? long.Parse(response.SecretKey) : (long?)null;
+            _time = response.Time;
+            return CurrentSessionToken = response.SessionToken;
         }
-
 
         private void LaunchPeriodicRenewal()
         {
-            if (_configuration.PeriodicallyRenewToken == false)
+            if (!_configuration.PeriodicallyRenewToken)
                 return;
 
             var oldRenewalTask = _periodicRenewalTask;
@@ -141,7 +157,7 @@ namespace MediaFireSDK.Core
 #if DEBUG
                     if (Debugger.IsAttached)
                         Debugger.Break();
-                    throw e;
+                    throw;
 #endif
                 }
             }, _periodicTokenSource.Token);
@@ -151,7 +167,6 @@ namespace MediaFireSDK.Core
             //
             if (oldRenewalTask != null)
                 oldCancellationTokenSource.Cancel();
-
         }
 
         private async Task PeriodicRenewalRoutine(TimeSpan period, CancellationToken cancellationToken)
@@ -189,7 +204,6 @@ namespace MediaFireSDK.Core
                     period = TimeSpan.FromMinutes(1);
                     periodicRenewTask.SetException(e);
 
-
                     cancellationToken.ThrowIfCancellationRequested();
                     continue;
                 }
@@ -211,6 +225,24 @@ namespace MediaFireSDK.Core
             return _cryptoService.GetSha1Hash(string.Format(signatureFormat, email, password, appId, appKey));
         }
 
+        private string GetMediaFireCallSignature(HttpRequestConfiguration request)
+        {
+            const string signatureFormat = "{0}{1}{2}";
+
+            var uri = new Uri(request.GetConfiguredPath());
+            return _cryptoService.GetMd5Hash(string.Format(signatureFormat, _secretKey % 256, _time, uri.PathAndQuery)).ToLowerInvariant();
+        }
+
+        public void RenewSecretKey()
+        {
+            if (!_secretKey.HasValue)
+                return;
+
+            _secretKey = (_secretKey * 16807) % 2147483647;
+
+            AuthenticationContextChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private async Task<bool> WaitForRenewal()
         {
             //
@@ -227,13 +259,14 @@ namespace MediaFireSDK.Core
             await renewalTask;
 
             return true;
-
         }
-
 
         public void Dispose()
         {
-            _periodicTokenSource.Cancel();
+            if (_periodicTokenSource != null)
+            {
+                _periodicTokenSource.Cancel();
+            }
         }
     }
 }

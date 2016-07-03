@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Http;
 using MediaFireSDK.Model;
@@ -13,8 +8,9 @@ namespace MediaFireSDK.Core
 {
     internal abstract class MediaFireApiBase
     {
-        protected MediaFireApiConfiguration Configuration { get; private set; }
-        protected MediaFireRequestController RequestController { get; private set; }
+        protected MediaFireApiConfiguration Configuration { get; }
+
+        protected MediaFireRequestController RequestController { get; }
 
         protected MediaFireApiBase(MediaFireRequestController requestController)
         {
@@ -27,16 +23,16 @@ namespace MediaFireSDK.Core
             RequestController = requestController;
         }
 
-        public async Task<T> Post<T>(string path, bool authenticate = true) where T : MediaFireResponseBase
+        public async Task<T> Post<T>(string path, bool authenticate = true)
+            where T : MediaFireResponseBase
         {
-            return await RequestController.Post<T>(await RequestController.CreateHttpRequest(path, authenticate));
+            return await RequestController.Post<T>(await RequestController.CreateHttpRequest(path, authenticate: authenticate));
         }
 
-        public async Task<T> Get<T>(string path, bool authenticate = true) where T : MediaFireResponseBase
+        public async Task<T> Get<T>(string path, bool authenticate = true)
+            where T : MediaFireResponseBase
         {
-            return await RequestController.Get<T>(await RequestController.CreateHttpRequest(path, authenticate));
+            return await RequestController.Get<T>(await RequestController.CreateHttpRequest(path, authenticate: authenticate));
         }
-
-      
     }
 }

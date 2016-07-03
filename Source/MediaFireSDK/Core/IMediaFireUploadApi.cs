@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Model;
-using MediaFireSDK.Model.Responses;
 
 namespace MediaFireSDK.Core
 {
@@ -26,13 +22,7 @@ namespace MediaFireSDK.Core
         /// <param name="folderKey">The destination folder to store the file. If it's not passed, then the file will be stored in the root folder.</param>
         /// <param name="actionOnDuplicate">Specifies the action to take when the file already exists, by name, in the destination folder. skip ignores the upload, keep uploads the file and makes the file name unique by appending a number to it, and replace overwrites the old file, possibly adding to its version history.</param>
         /// <param name="modificationTime">The date/time of the update. If not set, the current server time will be used.</param>
-        Task<MediaFireUploadConfiguration> GetUploadConfiguration(
-            string fileName,
-            long size,
-            string folderKey = null,
-            MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep,
-            DateTime? modificationTime = null
-            );
+        Task<MediaFireUploadConfiguration> GetUploadConfiguration(string fileName, long size, string folderKey = null, MediaFireActionOnDuplicate actionOnDuplicate = MediaFireActionOnDuplicate.Keep, DateTime? modificationTime = null);
 
         /// <summary>
         /// Returns the upload info, of an upload performed outside the sdk.
@@ -50,14 +40,7 @@ namespace MediaFireSDK.Core
         /// <param name="folderKey">The destination folder to store the file. If it's not passed, then the file will be stored in the root folder.</param>
         /// <param name="resumable">Specifies whether to make this upload resumable or not.</param>
         /// <returns></returns>
-        Task<MediaFireUploadCheckDetails> Check(
-            string fileName,
-            long size = 0,
-            string deviceId = null,
-            string hash = null,
-            string folderKey = null,
-            bool resumable = false
-            );
+        Task<MediaFireUploadCheckDetails> Check(string fileName, long size = 0, string deviceId = null, string hash = null, string folderKey = null, bool resumable = false);
 
         /// <summary>
         /// Uploads <paramref name="content"/> to MediaFire given a <paramref name="uploadConfiguration"/> retrieved from GetUploadConfiguration.
@@ -67,12 +50,6 @@ namespace MediaFireSDK.Core
         /// <param name="progress">A callback to receive progress updates.</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns></returns>
-        Task<MediaFireUploadDetails> Simple(
-            MediaFireUploadConfiguration uploadConfiguration,
-            Stream content,
-            IProgress<MediaFireOperationProgress> progress = null,
-            CancellationToken? token = null
-            );
-
+        Task<MediaFireUploadDetails> Simple(MediaFireUploadConfiguration uploadConfiguration, Stream content, IProgress<MediaFireOperationProgress> progress = null, CancellationToken? token = null);
     }
 }

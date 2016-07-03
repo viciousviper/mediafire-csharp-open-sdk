@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MediaFireSDK.Http;
 using MediaFireSDK.Model;
@@ -15,32 +12,19 @@ namespace MediaFireSDK.Core
         private readonly ICryptoService _cryptoService;
 
         public MediaFireUserApi(MediaFireRequestController requestController, MediaFireApiConfiguration configuration, ICryptoService cryptoService)
-            : base(requestController,configuration)
+            : base(requestController, configuration)
         {
             _cryptoService = cryptoService;
         }
 
-
-        public async Task<string> GetSessionToken(string email, string password)
+        public async Task<string> GetSessionToken(string email, string password, TokenVersion tokenVersion = TokenVersion.V1)
         {
-            RequestController.SessionBroker = null;
+            RequestController.SessionBroker = new MediaFireSessionBroker(_cryptoService, Configuration, email, password, RequestController);
+            RequestController.SessionBroker.AuthenticationContextChanged += (s, e) => AuthenticationContextChanged?.Invoke(this, e);
 
-            var sessionBroker = new MediaFireSessionBroker(
-                _cryptoService,
-                Configuration,
-                email,
-                password,
-                RequestController
-                );
-
-
-            var sessionToken = await sessionBroker.GetSessionToken();
-
-            RequestController.SessionBroker = sessionBroker;
-
+            var sessionToken = await RequestController.SessionBroker.GetSessionToken(tokenVersion);
 
             return sessionToken;
-
         }
 
         public async Task<RegisterResponse> Register(string email, string password, string firstName = null, string lastName = null, string displayName = null)
@@ -55,8 +39,22 @@ namespace MediaFireSDK.Core
                 .Parameter(MediaFireApiParameters.DisplayName, displayName);
 
             return await RequestController.Post<RegisterResponse>(requestConfig);
+        }
 
+        public AuthenticationContext GetAuthenticationContext()
+        {
+            if (RequestController.SessionBroker == null)
+                throw new InvalidOperationException("SessionBroker has not been initialized");
 
+            return RequestController.SessionBroker.GetAuthenticationContext();
+        }
+
+        public void SetAuthenticationContext(AuthenticationContext authenticationContext)
+        {
+            if (authenticationContext == null)
+                throw new ArgumentNullException("authenticationContext");
+
+            RequestController.SessionBroker = new MediaFireSessionBroker(_cryptoService, Configuration, authenticationContext, RequestController);
         }
 
         public async Task<UserTermsOfService> FetchTermsOfService()
@@ -79,5 +77,7 @@ namespace MediaFireSDK.Core
             RequestController.SessionBroker = null;
             return Task.FromResult(true);
         }
+
+        public event EventHandler AuthenticationContextChanged;
     }
 }

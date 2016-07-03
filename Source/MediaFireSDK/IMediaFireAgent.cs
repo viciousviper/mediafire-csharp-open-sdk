@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaFireSDK.Core;
 using MediaFireSDK.Model;
 using MediaFireSDK.Model.Responses;
 using MediaFireSDK.Multimedia;
-using Org.BouncyCastle.Bcpg;
 
 namespace MediaFireSDK
 {
@@ -30,12 +27,12 @@ namespace MediaFireSDK
 
         /// <summary>
         /// The Image api methods.
-        /// </summary>        
+        /// </summary>
         IMediaFireImageApi Image { get; }
 
         /// <summary>
         /// The Upload api methods.
-        /// </summary>        
+        /// </summary>
         IMediaFireUploadApi Upload { get; }
 
         /// <summary>
@@ -47,9 +44,10 @@ namespace MediaFireSDK
         /// <param name="attachSessionToken">Lets the SDK know if it is required to authenticate the request.</param>
         /// <returns>A deserialized response of type T</returns>
         /// <example>
-        /// 
+        ///
         /// </example>
-        Task<T> GetAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true) where T : MediaFireResponseBase;
+        Task<T> GetAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true)
+            where T : MediaFireResponseBase;
 
         /// <summary>
         /// Performs a Http Post to the MediaFire API.
@@ -60,9 +58,10 @@ namespace MediaFireSDK
         /// <param name="attachSessionToken">Lets the SDK know if it is required to authenticate the request.</param>
         /// <returns>A deserialized response of type T</returns>
         /// <example>
-        /// 
+        ///
         /// </example>
-        Task<T> PostAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true) where T : MediaFireResponseBase;
+        Task<T> PostAsync<T>(string path, IDictionary<string, object> parameters = null, bool attachSessionToken = true)
+            where T : MediaFireResponseBase;
 
         /// <summary>
         /// Performs a Http Post to the MediaFire API, of a file.
@@ -76,15 +75,8 @@ namespace MediaFireSDK
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <param name="progress">A callback to receive progress updates.</param>
         /// <returns>A deserialized response of type T</returns>
-        Task<T> PostStreamAsync<T>(
-            string path, 
-            Stream content, 
-            IDictionary<string, object> parameters, 
-            IDictionary<string, string> headers, 
-            bool attachSessionToken = true,
-            CancellationToken? token = null,
-            IProgress<MediaFireOperationProgress> progress = null 
-            ) where T : MediaFireResponseBase;
-
+        Task<T> PostStreamAsync<T>(string path, Stream content, IDictionary<string, object> parameters, IDictionary<string, string> headers, bool attachSessionToken = true,
+                                   CancellationToken? token = null, IProgress<MediaFireOperationProgress> progress = null)
+            where T : MediaFireResponseBase;
     }
 }

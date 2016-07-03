@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaFireSDK.Http.Error;
 using MediaFireSDK.Model;
 using Newtonsoft.Json;
 
 namespace MediaFireSDK.Http
 {
-
     public abstract class HttpRequestConfiguration
     {
         protected string Path;
@@ -41,16 +35,25 @@ namespace MediaFireSDK.Http
 
         public HttpRequestConfiguration Parameter(string name, object value)
         {
-            if (_ignoreEmptyValues && value == null)
-                return this;
-            return Parameter(name, value.ToString());
+            return value == null && _ignoreEmptyValues ? this : AddParameter(name, value.ToString());
+        }
+
+        public HttpRequestConfiguration Parameter(string name, Func<HttpRequestConfiguration, string> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException("func");
+
+            var value = func(this);
+            return string.IsNullOrEmpty(value) && _ignoreEmptyValues ? this : AddParameter(name, value);
         }
 
         public HttpRequestConfiguration Parameter(string name, string value)
         {
-            if (_ignoreEmptyValues && string.IsNullOrEmpty(value))
-                return this;
+            return string.IsNullOrEmpty(value) && _ignoreEmptyValues ? this : AddParameter(name, value);
+        }
 
+        private HttpRequestConfiguration AddParameter(string name, string value)
+        {
             Parameters.Add(new KeyValuePair<string, string>(name, value));
             return this;
         }
@@ -67,12 +70,10 @@ namespace MediaFireSDK.Http
             return this;
         }
 
-
         public HttpRequestConfiguration Header(string name, string value)
         {
             if (_ignoreEmptyValues && string.IsNullOrEmpty(value))
                 return this;
-
 
             Headers.Add(new KeyValuePair<string, string>(name, value));
             return this;
@@ -83,12 +84,9 @@ namespace MediaFireSDK.Http
             if (_ignoreEmptyValues && string.IsNullOrEmpty(value))
                 return this;
 
-
             ContentHeaders.Add(new KeyValuePair<string, string>(name, value));
             return this;
         }
-
-
 
         public HttpRequestConfiguration Content(Stream s, bool forUpload)
         {
@@ -98,10 +96,7 @@ namespace MediaFireSDK.Http
             return this;
         }
 
-        public HttpRequestConfiguration WithProgress(
-            IProgress<MediaFireOperationProgress> progressAction,
-            MediaFireOperationProgress progressData,
-            CancellationToken token)
+        public HttpRequestConfiguration WithProgress(IProgress<MediaFireOperationProgress> progressAction, MediaFireOperationProgress progressData, CancellationToken token)
         {
             Token = token;
             ProgressData = progressData;
@@ -120,7 +115,6 @@ namespace MediaFireSDK.Http
                     break;
                 }
             }
-
 
             list.Add(new KeyValuePair<string, string>(key, value));
         }
@@ -162,13 +156,4 @@ namespace MediaFireSDK.Http
             return MediaFireHttpHelpers.BuildQueryString(Parameters, Path);
         }
     }
-
-
-
-
-
-
-
-
-
 }

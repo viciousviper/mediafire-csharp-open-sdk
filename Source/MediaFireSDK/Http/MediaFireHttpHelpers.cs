@@ -10,15 +10,10 @@ using MediaFireSDK.Model;
 
 namespace MediaFireSDK.Http
 {
-
-
-
     public static class MediaFireHttpHelpers
     {
-
-
-        const string QueryStringFormat = "{0}?{1}";
-
+        private const string AppendQueryParametersFormat = "{0}&{1}";
+        private const string CreateQueryParametersFormat = "{0}?{1}";
 
         public static string GetString(this Encoding encoding, byte[] chars)
         {
@@ -27,21 +22,13 @@ namespace MediaFireSDK.Http
 
         public static string BuildQueryString(IEnumerable<KeyValuePair<string, string>> parameters, string url)
         {
-            var str = String.Join("&", parameters.Select(v => string.Concat(v.Key, "=", v.Value)).ToList());
-            return Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(string.Format(QueryStringFormat, url, str)));
-
+            var str = string.Join("&", parameters.Select(v => string.Concat(v.Key, "=", v.Value)).ToList());
+            var queryStringFormat = url.Contains("?") ? AppendQueryParametersFormat : CreateQueryParametersFormat;
+            return Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(string.Format(queryStringFormat, url, str)));
         }
 
-        public static async Task<string> Upload(
-            Stream src,
-            string url,
-            CancellationToken token,
-            IProgress<MediaFireOperationProgress> progress,
-            Dictionary<string, string> parameters,
-            Dictionary<string, string> headers,
-            long size,
-            MediaFireApiConfiguration configuration
-            )
+        public static async Task<string> Upload(Stream src, string url, CancellationToken token, IProgress<MediaFireOperationProgress> progress,
+            Dictionary<string, string> parameters, Dictionary<string, string> headers, long size, MediaFireApiConfiguration configuration)
         {
             const string httpPostMethodString = "POST";
 
@@ -69,13 +56,7 @@ namespace MediaFireSDK.Http
 
             var dstStream = await Task<Stream>.Factory.FromAsync(wr.BeginGetRequestStream, wr.EndGetRequestStream, null);
 
-            await CopyStreamWithProgress(
-                src,
-                dstStream,
-                progress,
-                token,
-                new MediaFireOperationProgress { TotalSize = size },
-                configuration.ChunkTransferBufferSize);
+            await CopyStreamWithProgress(src, dstStream, progress, token, new MediaFireOperationProgress { TotalSize = size }, configuration.ChunkTransferBufferSize);
 
             dstStream.Dispose();
 
@@ -86,14 +67,8 @@ namespace MediaFireSDK.Http
             return result;
         }
 
-        public static async Task<Stream> CopyStreamWithProgress(
-            Stream source,
-            Stream destination,
-            IProgress<MediaFireOperationProgress> progress,
-            CancellationToken token,
-            MediaFireOperationProgress progressData,
-            int bufferSize
-            )
+        public static async Task<Stream> CopyStreamWithProgress(Stream source, Stream destination, IProgress<MediaFireOperationProgress> progress,
+            CancellationToken token, MediaFireOperationProgress progressData, int bufferSize)
         {
             int read, offset = 0;
             var buffer = new byte[bufferSize];
