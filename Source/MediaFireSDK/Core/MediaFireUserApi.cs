@@ -11,16 +11,21 @@ namespace MediaFireSDK.Core
     {
         private readonly ICryptoService _cryptoService;
 
+        private readonly EventHandler _authenticationContextChangedHandler;
+
         public MediaFireUserApi(MediaFireRequestController requestController, MediaFireApiConfiguration configuration, ICryptoService cryptoService)
             : base(requestController, configuration)
         {
             _cryptoService = cryptoService;
+            _authenticationContextChangedHandler = (s, e) => AuthenticationContextChanged?.Invoke(this, e);
         }
 
         public async Task<string> GetSessionToken(string email, string password, TokenVersion tokenVersion = TokenVersion.V1)
         {
+            if (RequestController.SessionBroker != null)
+                RequestController.SessionBroker.AuthenticationContextChanged -= _authenticationContextChangedHandler;
             RequestController.SessionBroker = new MediaFireSessionBroker(_cryptoService, Configuration, email, password, RequestController);
-            RequestController.SessionBroker.AuthenticationContextChanged += (s, e) => AuthenticationContextChanged?.Invoke(this, e);
+            RequestController.SessionBroker.AuthenticationContextChanged += _authenticationContextChangedHandler;
 
             var sessionToken = await RequestController.SessionBroker.GetSessionToken(tokenVersion);
 
@@ -74,6 +79,8 @@ namespace MediaFireSDK.Core
 
         public Task Logout()
         {
+            if (RequestController.SessionBroker != null)
+                RequestController.SessionBroker.AuthenticationContextChanged -= _authenticationContextChangedHandler;
             RequestController.SessionBroker = null;
             return Task.FromResult(true);
         }

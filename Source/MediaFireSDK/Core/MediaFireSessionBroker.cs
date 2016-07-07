@@ -229,6 +229,9 @@ namespace MediaFireSDK.Core
         {
             const string signatureFormat = "{0}{1}{2}";
 
+            if (!_secretKey.HasValue)
+                return null;
+
             var uri = new Uri(request.GetConfiguredPath());
             return _cryptoService.GetMd5Hash(string.Format(signatureFormat, _secretKey % 256, _time, uri.PathAndQuery)).ToLowerInvariant();
         }
