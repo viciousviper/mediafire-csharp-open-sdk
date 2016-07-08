@@ -59,7 +59,10 @@ namespace MediaFireSDK.Core
             if (authenticationContext == null)
                 throw new ArgumentNullException("authenticationContext");
 
+            if (RequestController.SessionBroker != null)
+                RequestController.SessionBroker.AuthenticationContextChanged -= _authenticationContextChangedHandler;
             RequestController.SessionBroker = new MediaFireSessionBroker(_cryptoService, Configuration, authenticationContext, RequestController);
+            RequestController.SessionBroker.AuthenticationContextChanged += _authenticationContextChangedHandler;
         }
 
         public async Task<UserTermsOfService> FetchTermsOfService()
